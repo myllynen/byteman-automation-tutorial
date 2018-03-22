@@ -1,0 +1,52 @@
+{
+    "metrics": [
+        {
+            "name": "proftest.instances",
+            "description": "Objects instantiated from TestUnit",
+            "mBeanName": "proftest:type=Statistics",
+            "mBeanAttributeName": "instances"
+        },
+        {
+            "name": "proftest.count_a",
+            "description": "Calls to method a",
+            "mBeanName": "proftest:type=Statistics",
+            "mBeanAttributeName": "count_a"
+        },
+        {
+            "name": "proftest.count_b",
+            "description": "Calls to method b",
+            "mBeanName": "proftest:type=Statistics",
+            "mBeanAttributeName": "count_b"
+        },
+        {
+            "name": "proftest.count_c",
+            "description": "Calls to method c",
+            "mBeanName": "proftest:type=Statistics",
+            "mBeanAttributeName": "count_c"
+        },
+        {
+            "name": "proftest.average_lifetime",
+            "description": "Average lifetime",
+            "mBeanName": "proftest:type=Statistics",
+            "mBeanAttributeName": "average_lifetime"
+        },
+        {
+            "name": "java.threading.peakthreadcount",
+            "description": "java.lang:type=Threading / PeakThreadCount",
+            "mBeanName": "java.lang:type=Threading",
+            "mBeanAttributeName": "PeakThreadCount"
+        },
+        {
+            "name": "java.threading.threadcount",
+            "description": "java.lang:type=Threading / ThreadCount",
+            "mBeanName": "java.lang:type=Threading",
+            "mBeanAttributeName": "ThreadCount"
+        },
+        {
+            "name": "java.threading.totalstartedthreadcount",
+            "description": "java.lang:type=Threading / TotalStartedThreadCount",
+            "mBeanName": "java.lang:type=Threading",
+            "mBeanAttributeName": "TotalStartedThreadCount"
+        }
+    ]
+}

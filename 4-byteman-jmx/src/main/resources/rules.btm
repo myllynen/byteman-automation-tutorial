@@ -1,0 +1,57 @@
+HELPER proftest.JMXHelper
+
+RULE Register MBean
+CLASS proftest.ProfTest
+METHOD main
+AT ENTRY
+IF true
+DO registerMBean("proftest:type=Statistics");
+ENDRULE
+
+RULE Increment instance count
+CLASS proftest.TestUnit
+METHOD <init>
+AT EXIT
+IF true
+DO incrementInstances();
+ENDRULE
+
+RULE Record instance creation time
+CLASS proftest.TestUnit
+METHOD <init>
+AT ENTRY
+IF true
+DO recordCreationTime(System.identityHashCode($0));
+ENDRULE
+
+RULE Record instance lifetime
+CLASS proftest.TestUnit
+METHOD run
+AT EXIT
+IF true
+DO recordInstanceLifetime(System.identityHashCode($0));
+ENDRULE
+
+RULE Increment call count of method a
+CLASS proftest.TestUnit
+METHOD a
+AT ENTRY
+IF true
+DO incrementCountA();
+ENDRULE
+
+RULE Increment call count of method b
+CLASS proftest.TestUnit
+METHOD b
+AT ENTRY
+IF true
+DO incrementCountB();
+ENDRULE
+
+RULE Increment call count of method c
+CLASS proftest.TestUnit
+METHOD c
+AT ENTRY
+IF true
+DO incrementCountC();
+ENDRULE
