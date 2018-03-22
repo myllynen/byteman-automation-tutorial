@@ -79,7 +79,7 @@ Below is a screenshot of compiling, running, and seeing the first update
 from the example program - note the _APP_ marker indicating the source
 of the data on the first line:
 
-```sh
+```
 $ cd 1-example-stdout
 $ mvn package
 (output omitted)
@@ -105,7 +105,7 @@ Byteman is packaged for many distributions but installing the latest
 version locally without additional privileges is easy (copypasting the
 below snippet into a terminal is enough):
 
-```sh
+```
 vers=4.0.1
 wget http://downloads.jboss.org/byteman/$vers/byteman-download-$vers-bin.zip
 unzip byteman-download-$vers-bin.zip
@@ -141,7 +141,7 @@ feasible approach with larger applications.
 Here we start the example program and Byteman with it at the same time
 as a Java agent:
 
-```sh
+```
 $ cd 2-byteman-stdout
 $ mvn package
 (output omitted)
@@ -196,7 +196,7 @@ helper code.
 
 Below we see an example run with slightly changed command line options:
 
-```sh
+```
 $ cd 3-byteman-json
 $ mvn package
 (output omitted)
@@ -215,7 +215,7 @@ Average lifetime: 12
 The example program still prints out its statistics but now we also see
 the newly created _data.json_ file written by the helper:
 
-```sh
+```
 $ cat data.json
 {
   "instances": 10,
@@ -254,7 +254,7 @@ For easy testing, a simple standalone
 actual Byteman example code) is used in the below example. For this,
 we need to start the JVM with JMX enabled:
 
-```sh
+```
 $ cd 4-byteman-jmx
 $ mvn package
 (output omitted)
@@ -268,11 +268,11 @@ $ java -javaagent:$BYTEMAN_HOME/lib/byteman.jar=resourcescript:rules.btm \
 ```
 
 The example program will still print out statistics as before but now we
-can access those statistics also with the standalone utility (or, said,
+can access those statistics also with the standalone utility (or, as said,
 any other JMX consuming tool, like [Prometheus](https://prometheus.io/)
 or [Performance Co-Pilot](http://pcp.io/), PCP):
 
-```sh
+```
 $ javac MBean2TXT.java
 $ java MBean2TXT
 ProfTest statistics [JMX] - 2018-03-21 13:50:04.661:
@@ -293,7 +293,7 @@ screenshot from a Fedora 28 VM where [PCP](http://pcp.io/) is enabled
 and its plugin for JMX metrics,
 [Parfait](https://github.com/performancecopilot/parfait), is configured:
 
-```sh
+```
 # yum install pcp pcp-system-tools pcp-parfait-agent
 # systemctl start pmcd
 # cd 4-byteman-jmx
@@ -301,7 +301,7 @@ and its plugin for JMX metrics,
 # parfait --name byteman --connect localhost:9875
 ```
 
-```sh
+```
 $ pmrep --interval 10 --samples 2 mmv.byteman
   j.b.average_lifetime  j.b.instances  j.b.count_c  j.b.count_b  j.b.count_a
                     12             10            0            5           28
@@ -343,7 +343,7 @@ more generic by adjusting its output format.
 Testing can be done just as in the previous example, first we start the
 example application and Byteman with the generic helper and script:
 
-```sh
+```
 $ cd 5-byteman-generic
 $ mvn package
 (output omitted)
@@ -358,7 +358,7 @@ $ java -javaagent:$BYTEMAN_HOME/lib/byteman.jar=resourcescript:rules.btm \
 
 And then verify the availability of the metrics over JMX:
 
-```sh
+```
 $ javac MBean2TXT.java
 $ java MBean2TXT
 Application statistics [JMX] - 2018-03-21 16:10:32.168:
@@ -404,7 +404,7 @@ we include the earlier monitored classes and methods.
 Since the example program is unchanged we use the jar from the first
 previous example to creat the initial set of target classes and methods:
 
-```sh
+```
 $ cd 6-byteman-automate
 $ ./jarp.sh ../1-example-stdout/target/ProfTest-1.0.jar > targets.txt
 $ vi targets.txt
@@ -418,7 +418,7 @@ Now we compile the new standalone helper tool and generate a new Byteman
 script based on the above input (use the _-help_ option for a quick
 help):
 
-```sh
+```
 $ javac -cp .:$BYTEMAN_HOME/lib/byteman.jar:$BYTEMAN_HOME/contrib/dtest/byteman-dtest.jar \
     RuleCreator.java
 $ java -cp .:$BYTEMAN_HOME/lib/byteman.jar:$BYTEMAN_HOME/contrib/dtest/byteman-dtest.jar \
@@ -437,7 +437,7 @@ This generated script is included here for reference:
 We are now ready to run the usual test, first the application is
 started:
 
-```sh
+```
 $ mvn package
 (output omitted)
 $ java -javaagent:$BYTEMAN_HOME/lib/byteman.jar=resourcescript:rules.btm \
@@ -452,7 +452,7 @@ $ java -javaagent:$BYTEMAN_HOME/lib/byteman.jar=resourcescript:rules.btm \
 And then availability of the metrics based on the automatically created
 Byteman script is verified:
 
-```sh
+```
 $ javac MBean2TXT.java
 $ java MBean2TXT
 Application statistics [JMX] - 2018-03-21 16:34:38.371:
@@ -474,7 +474,7 @@ average execution time is (correctly) reported being zero.
 ## Byteman Automation Tool
 
 The Byteman Automation Tool is introduced at
-https://github.com/myllynen/byteman-guide/byteman-automation-tool.
+https://github.com/myllynen/byteman-automation-guide/tree/master/byteman-automation-tool.
 
 Otherwise it is like the last example above but the helper to create
 Byteman scripts is properly packaged, an example to attach to an already

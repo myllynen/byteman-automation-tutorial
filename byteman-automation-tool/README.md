@@ -93,7 +93,7 @@ Byteman is packaged for many distributions but installing the latest
 version locally without additional privileges is easy (copypasting the
 below snippet into a terminal is enough):
 
-```sh
+```
 vers=4.0.1
 wget http://downloads.jboss.org/byteman/$vers/byteman-download-$vers-bin.zip
 unzip byteman-download-$vers-bin.zip
@@ -107,7 +107,7 @@ After cloning this repository we launch
 [a simple test program](../1-example-stdout/src/main/java/proftest/ProfTest.java)
 later to be used as a guinea pig in the later example:
 
-```sh
+```
 $ cd 1-example-stdout
 $ mvn package
 $ java \
@@ -179,7 +179,7 @@ metrics from the selected targets with no interruption for the running
 application (prior Java 9, attaching to a JVM requires the _tools.jar_
 to be available):
 
-```sh
+```
 $ bminstall $(pidof java)
 $ bmsubmit -s $(pwd)/target/ProfTool-1.0.jar
 $ bmsubmit -c
@@ -202,7 +202,7 @@ To verify all the previous steps, we use a simple
 [MBean2TXT](MBean2TXT.java) helper utility to retrieve all the available
 metrics over JMX:
 
-```sh
+```
 $ javac MBean2TXT.java
 $ java MBean2TXT
 Application statistics [JMX] - 2018-03-21 16:41:22.152:
