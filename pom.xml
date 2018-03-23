@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>proftool</groupId>
+    <artifactId>proftool-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0</version>
+
+    <name>Byteman Profiling Helper Tool : Parent</name>
+    <url>https://github.com/myllynen/byteman-guide/byteman-automation-tool</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <byteman.version>4.0.1</byteman.version>
+    </properties>
+
+    <modules>
+        <module>byteman-automation-tool</module>
+        <module>1-example-stdout</module>
+        <module>2-byteman-stdout</module>
+        <module>3-byteman-json</module>
+        <module>4-byteman-jmx</module>
+        <module>5-byteman-generic</module>
+        <module>6-byteman-automate</module>
+    </modules>
+</project>
