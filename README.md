@@ -1,18 +1,19 @@
-# Byteman Automation Guide
+# Byteman Automation Tutorial
 
 [![License: GPLv2](https://img.shields.io/badge/license-GPLv2-brightgreen.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.en.html)
 
 ## Introduction
 
-This repository contains a [Byteman](http://byteman.jboss.org/)
-introduction and automation guide on how to automate custom, on-the-fly
-instrumentation and monitoring of unmodified Java applications, and
-exposing data to any external tool using the standard JMX technology.
+This repository provides a Tutorial Introduction to Byteman, using it to
+develop an Automation Tool which supports custom, on-the-fly
+instrumentation and monitoring of /unmodified/ Java applications. The
+tool exposes the captured data to any external tool using the standard
+JMX technology.
 
-The guide starts with a simple Hello World like example and proceeds to
-eventually introduce a low overhead, easily customizable tool to provide
-statistics from Java applications, initially supporting the following
-metrics over JMX:
+The tutorial starts with a simple Hello World like example and proceeds
+to eventually introduce a low overhead, easily customizable tool to
+provide statistics from Java applications, initially supporting the
+following metrics over JMX:
 
 * method average execution time
 * number of live instances of a class
@@ -43,22 +44,23 @@ lists four main areas where Byteman could be used:
 * orchestrating the timing of activities performed by independent application threads
 * monitoring and gathering statistics summarising application and JVM operation
 
-This guide concentrates on the last item to allow readers to get
+This tutorial concentrates on the last item to allow readers to get
 familiar with Byteman, automate its use, and evaluate its suitability
 for their projects.
 
 The first section will introduce a trivial Java program that will be
 used unmodified in later sections to monitor the number of objects
 instantiated from a class, how many times different methods have been
-called, and instance average lifetime. As usual with compact guides,
+called, and instance average lifetime. As usual with compact tutorials,
 proper error handling, unit tests, and other such aspects crucial in
 real-world programming are omitted from the examples to keep the code
 clear and to-the-point.
 
 ## Example Program
 
-The example program used throughout the rest of the guide is available
-in the directory [1-example-stdout](tutorial/1-example-stdout), more
+The example program used throughout the rest of the tutorial is
+available in the directory
+[1-example-stdout](tutorial/1-example-stdout), more
 specially it consists of
 [ProfTest.java](tutorial/1-example-stdout/src/main/java/proftest/ProfTest.java).
 The program will create objects from the _TestUnit_ class indefinitely
