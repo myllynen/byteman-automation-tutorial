@@ -155,7 +155,9 @@ as a Java agent:
 $ cd tutorial/2-byteman-stdout
 $ mvn package
 (output omitted)
-$ java -javaagent:$BYTEMAN_HOME/lib/byteman.jar=script:rules.btm -jar ./target/proftest-02-byteman-stdout-1.0.jar
+$ java \
+  -javaagent:$BYTEMAN_HOME/lib/byteman.jar=script:rules.btm \
+  -jar ./target/proftest-02-byteman-stdout-1.0.jar
 ProfTest statistics [BTM] - 2018-03-21 11:33:03.437:
 
 Objects instantiated from TestUnit: 10
@@ -210,7 +212,9 @@ Below we see an example run with slightly changed command line options:
 $ cd tutorial/3-byteman-json
 $ mvn package
 (output omitted)
-$ java -javaagent:$BYTEMAN_HOME/lib/byteman.jar=resourcescript:rules.btm -jar ./target/proftest-03-byteman-json-1.0.jar
+$ java \
+  -javaagent:$BYTEMAN_HOME/lib/byteman.jar=resourcescript:rules.btm \
+  -jar ./target/proftest-03-byteman-json-1.0.jar
 ProfTest statistics [APP] - 2018-03-21 11:34:49.606:
 
 Objects instantiated from TestUnit: 10
@@ -268,13 +272,14 @@ we need to start the JVM with JMX enabled:
 $ cd tutorial/4-byteman-jmx
 $ mvn package
 (output omitted)
-$ java -javaagent:$BYTEMAN_HOME/lib/byteman.jar=resourcescript:rules.btm \
-    -Dcom.sun.management.jmxremote=true \
-    -Dcom.sun.management.jmxremote.authenticate=false \
-    -Dcom.sun.management.jmxremote.local.only=true \
-    -Dcom.sun.management.jmxremote.port=9875 \
-    -Dcom.sun.management.jmxremote.ssl=false \
-    -jar ./target/proftest-04-byteman-jmx-1.0.jar
+$ java \
+  -javaagent:$BYTEMAN_HOME/lib/byteman.jar=resourcescript:rules.btm \
+  -Dcom.sun.management.jmxremote=true \
+  -Dcom.sun.management.jmxremote.authenticate=false \
+  -Dcom.sun.management.jmxremote.local.only=true \
+  -Dcom.sun.management.jmxremote.port=9875 \
+  -Dcom.sun.management.jmxremote.ssl=false \
+  -jar ./target/proftest-04-byteman-jmx-1.0.jar
 ```
 
 The example program will still print out statistics as before but now we
@@ -357,13 +362,14 @@ example application and Byteman with the generic helper and script:
 $ cd tutorial/5-byteman-generic
 $ mvn package
 (output omitted)
-$ java -javaagent:$BYTEMAN_HOME/lib/byteman.jar=resourcescript:rules.btm \
-    -Dcom.sun.management.jmxremote=true \
-    -Dcom.sun.management.jmxremote.authenticate=false \
-    -Dcom.sun.management.jmxremote.local.only=true \
-    -Dcom.sun.management.jmxremote.port=9875 \
-    -Dcom.sun.management.jmxremote.ssl=false \
-    -jar ./target/proftest-05-byteman-generic-1.0.jar
+$ java \
+  -javaagent:$BYTEMAN_HOME/lib/byteman.jar=resourcescript:rules.btm \
+  -Dcom.sun.management.jmxremote=true \
+  -Dcom.sun.management.jmxremote.authenticate=false \
+  -Dcom.sun.management.jmxremote.local.only=true \
+  -Dcom.sun.management.jmxremote.port=9875 \
+  -Dcom.sun.management.jmxremote.ssl=false \
+  -jar ./target/proftest-05-byteman-generic-1.0.jar
 ```
 
 And then verify the availability of the metrics over JMX:
@@ -430,10 +436,12 @@ script based on the above input (use the _-help_ option for a quick
 help):
 
 ```
-$ javac -cp .:$BYTEMAN_HOME/lib/byteman.jar:$BYTEMAN_HOME/contrib/dtest/byteman-dtest.jar \
-    RuleCreator.java
-$ java -cp .:$BYTEMAN_HOME/lib/byteman.jar:$BYTEMAN_HOME/contrib/dtest/byteman-dtest.jar \
-    RuleCreator \
+$ javac \
+  -cp .:$BYTEMAN_HOME/lib/byteman.jar:$BYTEMAN_HOME/contrib/dtest/byteman-dtest.jar \
+  RuleCreator.java
+$ java \
+  -cp .:$BYTEMAN_HOME/lib/byteman.jar:$BYTEMAN_HOME/contrib/dtest/byteman-dtest.jar \
+  RuleCreator \
     --input-file targets.txt \
     --instance-counts \
     --instance-lifetimes \
@@ -451,13 +459,14 @@ started:
 ```
 $ mvn package
 (output omitted)
-$ java -javaagent:$BYTEMAN_HOME/lib/byteman.jar=resourcescript:rules.btm \
-    -Dcom.sun.management.jmxremote=true \
-    -Dcom.sun.management.jmxremote.authenticate=false \
-    -Dcom.sun.management.jmxremote.local.only=true \
-    -Dcom.sun.management.jmxremote.port=9875 \
-    -Dcom.sun.management.jmxremote.ssl=false \
-    -jar ./target/proftest-06-byteman-automate-1.0.jar
+$ java \
+  -javaagent:$BYTEMAN_HOME/lib/byteman.jar=resourcescript:rules.btm \
+  -Dcom.sun.management.jmxremote=true \
+  -Dcom.sun.management.jmxremote.authenticate=false \
+  -Dcom.sun.management.jmxremote.local.only=true \
+  -Dcom.sun.management.jmxremote.port=9875 \
+  -Dcom.sun.management.jmxremote.ssl=false \
+  -jar ./target/proftest-06-byteman-automate-1.0.jar
 ```
 
 And then availability of the metrics based on the automatically created

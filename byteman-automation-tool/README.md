@@ -148,15 +148,16 @@ org.jboss.byteman.automate.proftest.TestUnit#a
 org.jboss.byteman.automate.proftest.TestUnit#b
 org.jboss.byteman.automate.proftest.TestUnit#c
 $ mvn package
-$ java -jar ./target/proftool-1.0.jar \
-    --input-file targets.txt \
-    --register-class proftest.TestUnit \
-    --register-method '<init>' \
-    --instance-counts \
-    --instance-lifetimes \
-    --call-counts \
-    --call-exectimes \
-    --output-file rules.btm
+$ java \
+    -jar ./target/proftool-1.0.jar \
+      --input-file targets.txt \
+      --register-class proftest.TestUnit \
+      --register-method '<init>' \
+      --instance-counts \
+      --instance-lifetimes \
+      --call-counts \
+      --call-exectimes \
+      --output-file rules.btm
 $ appdir=../tutorial/1-example-stdout/target
 $ tooljar=./target/proftool-1.0.jar
 $ bmcheck -cp $appdir:$tooljar -v rules.btm
