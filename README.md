@@ -62,7 +62,7 @@ The example program used throughout the rest of the tutorial is
 available in the directory
 [1-example-stdout](tutorial/1-example-stdout), more
 specially it consists of
-[ProfTest.java](tutorial/1-example-stdout/src/main/java/proftest/ProfTest.java).
+[ProfTest.java](tutorial/1-example-stdout/src/main/java/org/jboss/byteman/automate/proftest/ProfTest.java).
 The program will create objects from the _TestUnit_ class indefinitely
 once per second. The objects will have a lifetime between 1 to 20
 seconds during which time they periodically call the class methods _a_,
@@ -190,7 +190,7 @@ relying on method arguments and move the Byteman script to be part of
 the built jar file for easier packaging.
 
 Our example program is unchanged, but we add a custom helper code
-[JSONHelper.java](tutorial/3-byteman-json/src/main/java/proftest/JSONHelper.java)
+[JSONHelper.java](tutorial/3-byteman-json/src/main/java/org/java/byteman/automate/proftest/JSONHelper.java)
 that is relatively straightforward, it is the
 [rules.btm](tutorial/3-byteman-json/src/main/resources/rules.btm) script
 that connects the events in the application execution flow to our custom
@@ -244,7 +244,7 @@ allows any tool (like [Prometheus](https://prometheus.io/) or
 standard JMX interface to retrieve data collected by the Byteman helper.
 
 The example program still unchanged, our new custom helper code is
-[JMXHelper.java](tutorial/4-byteman-jmx/src/main/java/proftest/JMXHelper.java).
+[JMXHelper.java](tutorial/4-byteman-jmx/src/main/java/org/jboss/byteman/automate/proftest/JMXHelper.java).
 It is similar than the previous example but instead of writing a JSON
 file it defines a dynamic MBean providing the previous statistics as
 MBean attributes.
@@ -329,7 +329,7 @@ is not scalable as application implementation details are coded in the
 Byteman script and the JMXHelper.
 
 To address these issues,
-[JMXHelper.java](tutorial/5-byteman-generic/src/main/java/proftest/JMXHelper.java)
+[JMXHelper.java](tutorial/5-byteman-generic/src/main/java/org/jboss/byteman/automate/proftest/JMXHelper.java)
 is made generic so that it can be used with any application, the metrics
 (MBean attributes) published over JMX are now dynamic. Also the Byteman
 script [rules.btm](tutorial/5-byteman-generic/src/main/resources/rules.btm)
