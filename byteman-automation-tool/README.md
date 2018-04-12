@@ -124,7 +124,7 @@ $ java \
     -Dcom.sun.management.jmxremote.local.only=true \
     -Dcom.sun.management.jmxremote.port=9875 \
     -Dcom.sun.management.jmxremote.ssl=false \
-    -jar ./target/ProfTest-1.0.jar
+    -jar ./target/proftest-01-example-stdout-1.0.jar
 ```
 
 The program does nothing else than print some statistics periodically.
@@ -141,25 +141,25 @@ generated script:
 
 ```
 $ cd byteman-automation-tool
-$ ./jarp.sh ../1-example-stdout/target/ProfTest-1.0.jar > targets.txt
+$ ./jarp.sh ../tutorial/1-example-stdout/target/proftest-01-example-stdout-1.0.jar > targets.txt
 $ vi targets.txt
 $ cat targets.txt
-proftest.TestUnit#a
-proftest.TestUnit#b
-proftest.TestUnit#c
+org.jboss.byteman.automate.proftest.TestUnit#a
+org.jboss.byteman.automate.proftest.TestUnit#b
+org.jboss.byteman.automate.proftest.TestUnit#c
 $ mvn package
-$ java -jar ./target/ProfTool-1.0.jar \
-    -input-file targets.txt \
-    -register-class proftest.TestUnit \
-    -register-method '<init>' \
-    -instance-counts \
-    -instance-lifetimes \
-    -call-counts \
-    -call-exectimes \
-    -output-file rules.btm
-$ appjar=../1-example-stdout/target/ProfTest-1.0.jar
-$ tooljar=./target/ProfTool-1.0.jar
-$ bmcheck -cp $appjar:$tooljar -v rules.btm
+$ java -jar ./target/proftool-1.0.jar \
+    --input-file targets.txt \
+    --register-class proftest.TestUnit \
+    --register-method '<init>' \
+    --instance-counts \
+    --instance-lifetimes \
+    --call-counts \
+    --call-exectimes \
+    --output-file rules.btm
+$ appdir=../tutorial/1-example-stdout/target
+$ tooljar=./target/proftool-1.0.jar
+$ bmcheck -cp $appdir:$tooljar -v rules.btm
 ```
 
 It is worth explaining the _-register-class_ and _-register-method_

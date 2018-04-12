@@ -19,7 +19,7 @@
  *
  */
 
-package proftest;
+package org.jboss.byteman.automate.proftest;
 
 import java.io.FileOutputStream;
 import java.io.PrintWriter;

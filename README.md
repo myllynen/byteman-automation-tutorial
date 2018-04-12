@@ -82,10 +82,10 @@ from the example program - note the _APP_ marker indicating the source
 of the data on the first line:
 
 ```
-$ cd 1-example-stdout
+$ cd tutorial/1-example-stdout
 $ mvn package
 (output omitted)
-$ java -jar ./target/ProfTest-1.0.jar
+$ java -jar ./target/proftest-01-example-stdout-1.0.jar
 ProfTest statistics [APP] - 2018-03-21 11:30:14.555:
 
 Objects instantiated from TestUnit: 10
@@ -113,6 +113,14 @@ wget http://downloads.jboss.org/byteman/$vers/byteman-download-$vers-bin.zip
 unzip byteman-download-$vers-bin.zip
 export BYTEMAN_HOME=$(pwd)/byteman-download-$vers
 export PATH=$BYTEMAN_HOME/bin:$PATH
+```
+
+Optionally, after BYTEMAN_HOME has been set, _.bat_ files can be removed
+and _.sh_ suffixes can be removed:
+
+```
+find $BYTEMAN_HOME/bin -name '*.bat' -print | xargs rm -f
+find $BYTEMAN_HOME/bin -name '*.sh' -print | sed 'p;s/\.sh//' | xargs -n 2 mv
 ```
 
 ## Basic Byteman Example
@@ -144,10 +152,10 @@ Here we start the example program and Byteman with it at the same time
 as a Java agent:
 
 ```
-$ cd 2-byteman-stdout
+$ cd tutorial/2-byteman-stdout
 $ mvn package
 (output omitted)
-$ java -javaagent:$BYTEMAN_HOME/lib/byteman.jar=script:rules.btm -jar ./target/ProfTest-1.0.jar
+$ java -javaagent:$BYTEMAN_HOME/lib/byteman.jar=script:rules.btm -jar ./target/proftest-02-byteman-stdout-1.0.jar
 ProfTest statistics [BTM] - 2018-03-21 11:33:03.437:
 
 Objects instantiated from TestUnit: 10
@@ -199,10 +207,10 @@ helper code.
 Below we see an example run with slightly changed command line options:
 
 ```
-$ cd 3-byteman-json
+$ cd tutorial/3-byteman-json
 $ mvn package
 (output omitted)
-$ java -javaagent:$BYTEMAN_HOME/lib/byteman.jar=resourcescript:rules.btm -jar ./target/ProfTest-1.0.jar
+$ java -javaagent:$BYTEMAN_HOME/lib/byteman.jar=resourcescript:rules.btm -jar ./target/proftest-03-byteman-json-1.0.jar
 ProfTest statistics [APP] - 2018-03-21 11:34:49.606:
 
 Objects instantiated from TestUnit: 10
@@ -257,7 +265,7 @@ the actual Byteman example code) is used in the below example. For this,
 we need to start the JVM with JMX enabled:
 
 ```
-$ cd 4-byteman-jmx
+$ cd tutorial/4-byteman-jmx
 $ mvn package
 (output omitted)
 $ java -javaagent:$BYTEMAN_HOME/lib/byteman.jar=resourcescript:rules.btm \
@@ -266,7 +274,7 @@ $ java -javaagent:$BYTEMAN_HOME/lib/byteman.jar=resourcescript:rules.btm \
     -Dcom.sun.management.jmxremote.local.only=true \
     -Dcom.sun.management.jmxremote.port=9875 \
     -Dcom.sun.management.jmxremote.ssl=false \
-    -jar ./target/ProfTest-1.0.jar
+    -jar ./target/proftest-04-byteman-jmx-1.0.jar
 ```
 
 The example program will still print out statistics as before but now we
@@ -298,7 +306,7 @@ and its plugin for JMX metrics,
 ```
 # yum install pcp pcp-system-tools pcp-parfait-agent
 # systemctl start pmcd
-# cd 4-byteman-jmx
+# cd tutorial/4-byteman-jmx
 # cp pcp/proftest.json /etc/parfait/jvm.json
 # parfait --name byteman --connect localhost:9875
 ```
@@ -346,7 +354,7 @@ Testing can be done just as in the previous example, first we start the
 example application and Byteman with the generic helper and script:
 
 ```
-$ cd 5-byteman-generic
+$ cd tutorial/5-byteman-generic
 $ mvn package
 (output omitted)
 $ java -javaagent:$BYTEMAN_HOME/lib/byteman.jar=resourcescript:rules.btm \
@@ -355,7 +363,7 @@ $ java -javaagent:$BYTEMAN_HOME/lib/byteman.jar=resourcescript:rules.btm \
     -Dcom.sun.management.jmxremote.local.only=true \
     -Dcom.sun.management.jmxremote.port=9875 \
     -Dcom.sun.management.jmxremote.ssl=false \
-    -jar ./target/ProfTest-1.0.jar
+    -jar ./target/proftest-05-byteman-generic-1.0.jar
 ```
 
 And then verify the availability of the metrics over JMX:
@@ -408,7 +416,7 @@ Since the example program is unchanged we use the jar from the first
 previous example to creat the initial set of target classes and methods:
 
 ```
-$ cd 6-byteman-automate
+$ cd tutorial/6-byteman-automate
 $ ./jarp.sh ../1-example-stdout/target/ProfTest-1.0.jar > targets.txt
 $ vi targets.txt
 $ cat targets.txt
@@ -426,12 +434,12 @@ $ javac -cp .:$BYTEMAN_HOME/lib/byteman.jar:$BYTEMAN_HOME/contrib/dtest/byteman-
     RuleCreator.java
 $ java -cp .:$BYTEMAN_HOME/lib/byteman.jar:$BYTEMAN_HOME/contrib/dtest/byteman-dtest.jar \
     RuleCreator \
-    -input-file targets.txt \
-    -instance-counts \
-    -instance-lifetimes \
-    -call-counts \
-    -call-exectimes \
-    -output-file ./src/main/resources/rules.btm
+    --input-file targets.txt \
+    --instance-counts \
+    --instance-lifetimes \
+    --call-counts \
+    --call-exectimes \
+    --output-file ./src/main/resources/rules.btm
 ```
 
 This generated script is included here for reference:
@@ -449,7 +457,7 @@ $ java -javaagent:$BYTEMAN_HOME/lib/byteman.jar=resourcescript:rules.btm \
     -Dcom.sun.management.jmxremote.local.only=true \
     -Dcom.sun.management.jmxremote.port=9875 \
     -Dcom.sun.management.jmxremote.ssl=false \
-    -jar ./target/ProfTest-1.0.jar
+    -jar ./target/proftest-06-byteman-automate-1.0.jar
 ```
 
 And then availability of the metrics based on the automatically created
