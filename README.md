@@ -200,7 +200,7 @@ relying on method arguments and move the Byteman script to be part of
 the built jar file for easier packaging.
 
 Our example program is unchanged, but we add a custom helper code
-[JSONHelper.java](tutorial/3-byteman-json/src/main/java/org/java/byteman/automate/proftest/JSONHelper.java)
+[JSONHelper.java](tutorial/3-byteman-json/src/main/java/org/jboss/byteman/automate/proftest/JSONHelper.java)
 that is relatively straightforward, it is the
 [rules.btm](tutorial/3-byteman-json/src/main/resources/rules.btm) script
 that connects the events in the application execution flow to our custom
