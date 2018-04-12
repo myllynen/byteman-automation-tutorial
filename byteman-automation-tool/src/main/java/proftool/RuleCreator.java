@@ -124,17 +124,14 @@ public class RuleCreator {
     }
 
     private RuleConstructor createRegisterMBeanRule(String clazz, String method, String action, String objectName) {
-        String ruleName = "Register dynamic MBean";
-        RuleConstructor.ClassClause classClause = RuleConstructor.createRule(ruleName);
-        RuleConstructor.MethodClause methodClause = classClause.onClass(clazz);
-        RuleConstructor builder = methodClause
+        return RuleConstructor.createRule("Register dynamic MBean")
+            .onClass(clazz)
             .inMethod(method)
             .helper(helperClass)
             .atEntry()
             .compile()
             .ifTrue()
-            .doAction(action + "(\"" + objectName + "\");");
-        return builder;
+            .doAction(action + "(\"" + objectName + "\")");
     }
 
     private RuleConstructor createEntryRule(String ruleName, String clazz, String method, String action) {
