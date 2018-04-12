@@ -45,17 +45,17 @@ public class RuleCreator {
     private static final String OPT_HELP_SHORT         = "-h";
     private static final String OPT_HELP               = "-help";
     private static final String OPT_HELP_LONG          = "--help";
-    private static final String OPT_INPUT_FILE         = "-input-file";
-    private static final String OPT_OUTPUT_FILE        = "-output-file";
-    private static final String OPT_HELPER_CLASS       = "-helper-class";
-    private static final String OPT_REGISTER_CLASS     = "-register-class";
-    private static final String OPT_REGISTER_METHOD    = "-register-method";
-    private static final String OPT_REGISTER_ACTION    = "-register-action";
-    private static final String OPT_REGISTER_OBJECT    = "-register-object";
-    private static final String OPT_INSTANCE_COUNTS    = "-instance-counts";
-    private static final String OPT_INSTANCE_LIFETIMES = "-instance-lifetimes";
-    private static final String OPT_CALL_COUNTS        = "-call-counts";
-    private static final String OPT_CALL_EXECTIMES     = "-call-exectimes";
+    private static final String OPT_INPUT_FILE         = "--input-file";
+    private static final String OPT_OUTPUT_FILE        = "--output-file";
+    private static final String OPT_HELPER_CLASS       = "--helper-class";
+    private static final String OPT_REGISTER_CLASS     = "--register-class";
+    private static final String OPT_REGISTER_METHOD    = "--register-method";
+    private static final String OPT_REGISTER_ACTION    = "--register-action";
+    private static final String OPT_REGISTER_OBJECT    = "--register-object";
+    private static final String OPT_INSTANCE_COUNTS    = "--instance-counts";
+    private static final String OPT_INSTANCE_LIFETIMES = "--instance-lifetimes";
+    private static final String OPT_CALL_COUNTS        = "--call-counts";
+    private static final String OPT_CALL_EXECTIMES     = "--call-exectimes";
 
     // Defaults
     private static final String DFL_INPUT_FILE         = "targets.txt";
