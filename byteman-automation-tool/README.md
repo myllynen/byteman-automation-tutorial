@@ -101,6 +101,14 @@ export BYTEMAN_HOME=$(pwd)/byteman-download-$vers
 export PATH=$BYTEMAN_HOME/bin:$PATH
 ```
 
+Optionally, after BYTEMAN_HOME has been set, _.bat_ files can be removed
+and _.sh_ suffixes can be removed:
+
+```
+find $BYTEMAN_HOME/bin -name '*.bat' -print | xargs rm -f
+find $BYTEMAN_HOME/bin -name '*.sh' -print | sed 'p;s/\.sh//' | xargs -n 2 mv
+```
+
 ## Byteman Automation Example
 
 After cloning this repository we launch
@@ -180,7 +188,7 @@ application (prior Java 9, attaching to a JVM requires the _tools.jar_
 to be available):
 
 ```
-$ bminstall $(pidof java)
+$ bminstall $(jps -l | awk '/ProfTest/ {print $1}')
 $ bmsubmit -s $(pwd)/target/ProfTool-1.0.jar
 $ bmsubmit -c
 $ bmsubmit -l rules.btm
