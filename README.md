@@ -58,9 +58,9 @@ clear and to-the-point.
 ## Example Program
 
 The example program used throughout the rest of the guide is available
-in the directory [1-example-stdout](1-example-stdout), more specially it
-consists of
-[ProfTest.java](1-example-stdout/src/main/java/proftest/ProfTest.java).
+in the directory [1-example-stdout](tutorial/1-example-stdout), more
+specially it consists of
+[ProfTest.java](tutorial/1-example-stdout/src/main/java/proftest/ProfTest.java).
 The program will create objects from the _TestUnit_ class indefinitely
 once per second. The objects will have a lifetime between 1 to 20
 seconds during which time they periodically call the class methods _a_,
@@ -106,7 +106,7 @@ version locally without additional privileges is easy (copypasting the
 below snippet into a terminal is enough):
 
 ```
-vers=4.0.1
+vers=4.0.2
 wget http://downloads.jboss.org/byteman/$vers/byteman-download-$vers-bin.zip
 unzip byteman-download-$vers-bin.zip
 export BYTEMAN_HOME=$(pwd)/byteman-download-$vers
@@ -121,9 +121,9 @@ being traced could be doing anything and not collect any statistics by
 itself. Byteman would allow extracting this information without any help
 from the program by manipulating the bytecode running on the JVM.
 
-This basic [rules.btm](2-byteman-stdout/rules.btm) Byteman script
-defines a set of rules which increment statistics counters at the start
-and end of different methods and periodically print results to the
+This basic [rules.btm](tutorial/2-byteman-stdout/rules.btm) Byteman
+script defines a set of rules which increment statistics counters at the
+start and end of different methods and periodically print results to the
 standard output. This allows us to verify that the statistics printed by
 the program and the example Byteman script are similar and correct.
 
@@ -188,10 +188,10 @@ relying on method arguments and move the Byteman script to be part of
 the built jar file for easier packaging.
 
 Our example program is unchanged, but we add a custom helper code
-[JSONHelper.java](3-byteman-json/src/main/java/proftest/JSONHelper.java)
+[JSONHelper.java](tutorial/3-byteman-json/src/main/java/proftest/JSONHelper.java)
 that is relatively straightforward, it is the
-[rules.btm](3-byteman-json/src/main/resources/rules.btm) script that
-connects the events in the application execution flow to our custom
+[rules.btm](tutorial/3-byteman-json/src/main/resources/rules.btm) script
+that connects the events in the application execution flow to our custom
 helper code.
 
 Below we see an example run with slightly changed command line options:
@@ -242,16 +242,16 @@ allows any tool (like [Prometheus](https://prometheus.io/) or
 standard JMX interface to retrieve data collected by the Byteman helper.
 
 The example program still unchanged, our new custom helper code is
-[JMXHelper.java](4-byteman-jmx/src/main/java/proftest/JMXHelper.java).
+[JMXHelper.java](tutorial/4-byteman-jmx/src/main/java/proftest/JMXHelper.java).
 It is similar than the previous example but instead of writing a JSON
 file it defines a dynamic MBean providing the previous statistics as
 MBean attributes.
-[rules.btm](4-byteman-jmx/src/main/resources/rules.btm) script connects
-the events in the application execution flow to our JMX helper.
+[rules.btm](tutorial/4-byteman-jmx/src/main/resources/rules.btm) script
+connects the events in the application execution flow to our JMX helper.
 
 For easy testing, a simple standalone
-[MBean2TXT](4-byteman-jmx/MBean2TXT.java) utility (unrelated to the
-actual Byteman example code) is used in the below example. For this,
+[MBean2TXT](tutorial/4-byteman-jmx/MBean2TXT.java) utility (unrelated to
+the actual Byteman example code) is used in the below example. For this,
 we need to start the JVM with JMX enabled:
 
 ```
@@ -327,18 +327,18 @@ is not scalable as application implementation details are coded in the
 Byteman script and the JMXHelper.
 
 To address these issues,
-[JMXHelper.java](5-byteman-generic/src/main/java/proftest/JMXHelper.java)
+[JMXHelper.java](tutorial/5-byteman-generic/src/main/java/proftest/JMXHelper.java)
 is made generic so that it can be used with any application, the metrics
 (MBean attributes) published over JMX are now dynamic. Also the Byteman
-script [rules.btm](5-byteman-generic/src/main/resources/rules.btm) is
-adjusted to call these generic methods of the helper, no application
+script [rules.btm](tutorial/5-byteman-generic/src/main/resources/rules.btm)
+is adjusted to call these generic methods of the helper, no application
 related details are included in the script anymore either.
 
 To guarantee reliability of this approach, we enable automatic Byteman
 script correctness checking as part of Maven packaging phase in
-[pom.xml](5-byteman-generic/pom.xml). Also the simple
-[MBean2TXT](5-byteman-generic/MBean2TXT.java) utility is made slightly
-more generic by adjusting its output format.
+[pom.xml](tutorial/5-byteman-generic/pom.xml). Also the simple
+[MBean2TXT](tutorial/5-byteman-generic/MBean2TXT.java) utility is made
+slightly more generic by adjusting its output format.
 
 Testing can be done just as in the previous example, first we start the
 example application and Byteman with the generic helper and script:
@@ -390,13 +390,14 @@ application under investigation would be needed.
 
 The Byteman JMX helper from the previous example is unchanged but a new
 standalone helper tool to automatically create Byteman scripts is added.
-This [RuleCreator](6-byteman-automate/RuleCreator.java) reads in a text
-file listing target classes and methods and based on given parameters
-writes out a new Byteman script.
+This [RuleCreator](tutorial/6-byteman-automate/RuleCreator.java) reads
+in a text file listing target classes and methods and based on given
+parameters writes out a new Byteman script.
 
 While there are several ways to determine the most relevant target
 classes and methods (the next section discusses this in more detail),
-here we use a quick and simple [jarp.sh](6-byteman-automate/jarp.sh)
+here we use a quick and simple
+[jarp.sh](tutorial/6-byteman-automate/jarp.sh)
 shell script to generate a list of all methods found in a given jar
 file. This list can then easily be adjusted as needed. In this example,
 we include the earlier monitored classes and methods.
@@ -432,7 +433,7 @@ $ java -cp .:$BYTEMAN_HOME/lib/byteman.jar:$BYTEMAN_HOME/contrib/dtest/byteman-d
 ```
 
 This generated script is included here for reference:
-[rules.btm](6-byteman-automate/src/main/resources/rules.btm).
+[rules.btm](tutorial/6-byteman-automate/src/main/resources/rules.btm).
 
 We are now ready to run the usual test, first the application is
 started:

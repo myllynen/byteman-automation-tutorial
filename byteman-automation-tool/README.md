@@ -11,7 +11,7 @@ using the standard JMX technology.
 
 Although using _the tool does not necessarily require Byteman
 knowledge_, it is still recommended to check the
-[Byteman Automation Guide](https://github.com/myllynen/byteman-automation-guide)
+[Byteman Automation Guide](https://github.com/myllynen/byteman-automation-tutorial)
 for basic Byteman introduction and to understand the basic operation of
 this tool.
 
@@ -94,7 +94,7 @@ version locally without additional privileges is easy (copypasting the
 below snippet into a terminal is enough):
 
 ```
-vers=4.0.1
+vers=4.0.2
 wget http://downloads.jboss.org/byteman/$vers/byteman-download-$vers-bin.zip
 unzip byteman-download-$vers-bin.zip
 export BYTEMAN_HOME=$(pwd)/byteman-download-$vers
@@ -112,11 +112,11 @@ find $BYTEMAN_HOME/bin -name '*.sh' -print | sed 'p;s/\.sh//' | xargs -n 2 mv
 ## Byteman Automation Example
 
 After cloning this repository we launch
-[a simple test program](../1-example-stdout/src/main/java/proftest/ProfTest.java)
+[a simple test program](../tutorial/1-example-stdout/src/main/java/org/jboss/byteman/automate/proftest/ProfTest.java)
 later to be used as a guinea pig in the later example:
 
 ```
-$ cd 1-example-stdout
+$ cd tutorial/1-example-stdout
 $ mvn package
 $ java \
     -Dcom.sun.management.jmxremote=true \
@@ -134,7 +134,8 @@ the jar to create the initial configuration file containing
 instrumentation points for the test application, customize these targets
 (for real applications these configurations could be predefined, have
 different target sets for different scenarios, be integrated with higher
-level tools, and so forth), then use the [tool](src/main/java/proftool)
+level tools, and so forth), then use the
+[tool](src/main/java/org/jboss/byteman/automate/proftool)
 to generate the corresponding Byteman script, and finally check the
 generated script:
 
@@ -164,7 +165,7 @@ $ bmcheck -cp $appjar:$tooljar -v rules.btm
 It is worth explaining the _-register-class_ and _-register-method_
 parameters here: they define the class and the method of which
 invocation causes
-[the Byteman helper class](src/main/java/proftool/JMXHelper.java)
+[the Byteman helper class](src/main/java/org/jboss/byteman/automate/proftool/JMXHelper.java)
 of the tool responsible for transforming application events into metrics
 available over JMX getting registered. In case the Byteman agent is
 installed during application startup, the method could be _main_. Here,

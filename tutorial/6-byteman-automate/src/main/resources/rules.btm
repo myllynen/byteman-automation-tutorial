@@ -1,0 +1,104 @@
+RULE Register dynamic MBean
+CLASS org.jboss.byteman.automate.proftest.ProfTest
+METHOD main
+AT ENTRY
+HELPER org.jboss.byteman.automate.proftest.JMXHelper
+IF true
+DO registerMBean("byteman:type=Statistics");
+ENDRULE
+RULE Increment instance count: org.jboss.byteman.automate.proftest.TestUnit
+CLASS org.jboss.byteman.automate.proftest.TestUnit
+METHOD <init>
+AT EXIT
+HELPER org.jboss.byteman.automate.proftest.JMXHelper
+IF true
+DO incrementInstanceCount($CLASS);
+ENDRULE
+RULE Record instance creation time: org.jboss.byteman.automate.proftest.TestUnit
+CLASS org.jboss.byteman.automate.proftest.TestUnit
+METHOD <init>
+AT ENTRY
+HELPER org.jboss.byteman.automate.proftest.JMXHelper
+IF true
+DO recordInstanceCreationTime($CLASS, $0);
+ENDRULE
+RULE Record instance lifetime: org.jboss.byteman.automate.proftest.TestUnit
+CLASS org.jboss.byteman.automate.proftest.TestUnit
+METHOD run
+AT EXIT
+HELPER org.jboss.byteman.automate.proftest.JMXHelper
+IF true
+DO recordInstanceLifetime($CLASS, $0);
+ENDRULE
+RULE Increment call count: org.jboss.byteman.automate.proftest.TestUnit - a
+CLASS org.jboss.byteman.automate.proftest.TestUnit
+METHOD a
+AT ENTRY
+HELPER org.jboss.byteman.automate.proftest.JMXHelper
+IF true
+DO incrementMethodCallCount($CLASS, $METHOD);
+ENDRULE
+RULE Record call time of method: org.jboss.byteman.automate.proftest.TestUnit - a
+CLASS org.jboss.byteman.automate.proftest.TestUnit
+METHOD a
+AT ENTRY
+HELPER org.jboss.byteman.automate.proftest.JMXHelper
+IF true
+DO recordMethodCallTime($CLASS, $METHOD);
+ENDRULE
+RULE Record execution time of method: org.jboss.byteman.automate.proftest.TestUnit - a
+CLASS org.jboss.byteman.automate.proftest.TestUnit
+METHOD a
+AT EXIT
+HELPER org.jboss.byteman.automate.proftest.JMXHelper
+IF true
+DO recordMethodExecTime($CLASS, $METHOD);
+ENDRULE
+RULE Increment call count: org.jboss.byteman.automate.proftest.TestUnit - b
+CLASS org.jboss.byteman.automate.proftest.TestUnit
+METHOD b
+AT ENTRY
+HELPER org.jboss.byteman.automate.proftest.JMXHelper
+IF true
+DO incrementMethodCallCount($CLASS, $METHOD);
+ENDRULE
+RULE Record call time of method: org.jboss.byteman.automate.proftest.TestUnit - b
+CLASS org.jboss.byteman.automate.proftest.TestUnit
+METHOD b
+AT ENTRY
+HELPER org.jboss.byteman.automate.proftest.JMXHelper
+IF true
+DO recordMethodCallTime($CLASS, $METHOD);
+ENDRULE
+RULE Record execution time of method: org.jboss.byteman.automate.proftest.TestUnit - b
+CLASS org.jboss.byteman.automate.proftest.TestUnit
+METHOD b
+AT EXIT
+HELPER org.jboss.byteman.automate.proftest.JMXHelper
+IF true
+DO recordMethodExecTime($CLASS, $METHOD);
+ENDRULE
+RULE Increment call count: org.jboss.byteman.automate.proftest.TestUnit - c
+CLASS org.jboss.byteman.automate.proftest.TestUnit
+METHOD c
+AT ENTRY
+HELPER org.jboss.byteman.automate.proftest.JMXHelper
+IF true
+DO incrementMethodCallCount($CLASS, $METHOD);
+ENDRULE
+RULE Record call time of method: org.jboss.byteman.automate.proftest.TestUnit - c
+CLASS org.jboss.byteman.automate.proftest.TestUnit
+METHOD c
+AT ENTRY
+HELPER org.jboss.byteman.automate.proftest.JMXHelper
+IF true
+DO recordMethodCallTime($CLASS, $METHOD);
+ENDRULE
+RULE Record execution time of method: org.jboss.byteman.automate.proftest.TestUnit - c
+CLASS org.jboss.byteman.automate.proftest.TestUnit
+METHOD c
+AT EXIT
+HELPER org.jboss.byteman.automate.proftest.JMXHelper
+IF true
+DO recordMethodExecTime($CLASS, $METHOD);
+ENDRULE

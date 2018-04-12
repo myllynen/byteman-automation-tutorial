@@ -3,26 +3,26 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>proftool</groupId>
-    <artifactId>proftool-parent</artifactId>
+    <groupId>org.jboss.byteman.byteman-automate</groupId>
+    <artifactId>byteman-automation-tool-parent</artifactId>
     <packaging>pom</packaging>
     <version>1.0</version>
 
-    <name>Byteman Automate : Parent</name>
-    <url>https://github.com/myllynen/byteman-automation-guide</url>
+    <name>Byteman Automation Tutorial : Parent</name>
+    <url>https://github.com/myllynen/byteman-automation-tutorial</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <byteman.version>4.0.1</byteman.version>
+        <byteman.version>4.0.2</byteman.version>
     </properties>
 
     <modules>
-        <module>1-example-stdout</module>
-        <module>2-byteman-stdout</module>
-        <module>3-byteman-json</module>
-        <module>4-byteman-jmx</module>
-        <module>5-byteman-generic</module>
-        <module>6-byteman-automate</module>
+        <module>tutorial/1-example-stdout</module>
+        <module>tutorial/2-byteman-stdout</module>
+        <module>tutorial/3-byteman-json</module>
+        <module>tutorial/4-byteman-jmx</module>
+        <module>tutorial/5-byteman-generic</module>
+        <module>tutorial/6-byteman-automate</module>
         <module>byteman-automation-tool</module>
     </modules>
 </project>

@@ -1,0 +1,3 @@
+org.jboss.byteman.automate.proftest.TestUnit#a
+org.jboss.byteman.automate.proftest.TestUnit#b
+org.jboss.byteman.automate.proftest.TestUnit#c
