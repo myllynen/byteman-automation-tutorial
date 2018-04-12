@@ -494,7 +494,7 @@ average execution time is (correctly) reported being zero.
 ## Byteman Automation Tool
 
 The Byteman Automation Tool is introduced at
-https://github.com/myllynen/byteman-automation-guide/tree/master/byteman-automation-tool.
+https://github.com/myllynen/byteman-automation-tutorial/tree/master/byteman-automation-tool.
 
 Otherwise it is like the last example above but the helper to create
 Byteman scripts is properly packaged, an example to attach to an already
