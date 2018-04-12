@@ -158,55 +158,56 @@ public class RuleCreator {
 
     public StringBuilder createRules() throws FileNotFoundException, IOException {
         StringBuilder ruleScriptBuilder = new StringBuilder();
-        BufferedReader br = new BufferedReader(new FileReader(inputFile));
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFile))) {
 
-        ruleScriptBuilder.append(createRegisterMBeanRule(registerClass, registerMethod, registerAction, registerObject).build());
+            ruleScriptBuilder.append(createRegisterMBeanRule(registerClass, registerMethod, registerAction, registerObject).build());
 
-        String prevClazz = null;
-        for (String line; (line = br.readLine()) != null; ) {
-            String clazz = line.substring(0, line.indexOf("#"));
-            String method = line.substring(line.indexOf("#") + 1);
+            String prevClazz = null;
+            for (String line; (line = br.readLine()) != null; ) {
+                String clazz = line.substring(0, line.indexOf("#"));
+                String method = line.substring(line.indexOf("#") + 1);
 
-            if (prevClazz == null || !prevClazz.equals(clazz)) {
-                if (instanceCounts) {
-                    String ruleName = "Increment instance count: " + clazz;
-                    String action = "incrementInstanceCount($CLASS);";
-                    ruleScriptBuilder.append(createExitRule(ruleName, clazz, "<init>", action).build());
+                if (prevClazz == null || !prevClazz.equals(clazz)) {
+                    if (instanceCounts) {
+                        String ruleName = "Increment instance count: " + clazz;
+                        String action = "incrementInstanceCount($CLASS);";
+                        ruleScriptBuilder.append(createExitRule(ruleName, clazz, "<init>", action).build());
+                    }
+                    if (instanceLifetimes) {
+                        String ruleName = "Record instance creation time: " + clazz;
+                        String action = ("recordInstanceCreationTime($CLASS, $0);");
+                        ruleScriptBuilder.append(createEntryRule(ruleName, clazz, "<init>", action).build());
+
+                        ruleName = "Record instance lifetime: " + clazz;
+                        action = "recordInstanceLifetime($CLASS, $0);";
+                        ruleScriptBuilder.append(createExitRule(ruleName, clazz, "run", action).build());
+                    }
                 }
-                if (instanceLifetimes) {
-                    String ruleName = "Record instance creation time: " + clazz;
-                    String action = ("recordInstanceCreationTime($CLASS, $0);");
-                    ruleScriptBuilder.append(createEntryRule(ruleName, clazz, "<init>", action).build());
+                prevClazz = clazz;
 
-                    ruleName = "Record instance lifetime: " + clazz;
-                    action = "recordInstanceLifetime($CLASS, $0);";
-                    ruleScriptBuilder.append(createExitRule(ruleName, clazz, "run", action).build());
+                if (callCounts) {
+                    String ruleName = "Increment call count: " + clazz + " - " + method;
+                    String action = "incrementMethodCallCount($CLASS, $METHOD);";
+                    ruleScriptBuilder.append(createEntryRule(ruleName, clazz, method, action).build());
                 }
-            }
-            prevClazz = clazz;
+                if (callExectimes) {
+                    String ruleName = "Record call time of method: " + clazz + " - " + method;
+                    String action = "recordMethodCallTime($CLASS, $METHOD);";
+                    ruleScriptBuilder.append(createEntryRule(ruleName, clazz, method, action).build());
 
-            if (callCounts) {
-                String ruleName = "Increment call count: " + clazz + " - " + method;
-                String action = "incrementMethodCallCount($CLASS, $METHOD);";
-                ruleScriptBuilder.append(createEntryRule(ruleName, clazz, method, action).build());
-            }
-            if (callExectimes) {
-                String ruleName = "Record call time of method: " + clazz + " - " + method;
-                String action = "recordMethodCallTime($CLASS, $METHOD);";
-                ruleScriptBuilder.append(createEntryRule(ruleName, clazz, method, action).build());
-
-                ruleName = "Record execution time of method: " + clazz + " - " + method;
-                action = "recordMethodExecTime($CLASS, $METHOD);";
-                ruleScriptBuilder.append(createExitRule(ruleName, clazz, method, action).build());
+                    ruleName = "Record execution time of method: " + clazz + " - " + method;
+                    action = "recordMethodExecTime($CLASS, $METHOD);";
+                    ruleScriptBuilder.append(createExitRule(ruleName, clazz, method, action).build());
+                }
             }
         }
         return ruleScriptBuilder;
     }
 
     public void writeRules(StringBuilder ruleScriptBuilder) throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(new File(outputFile)));
-        writer.write(ruleScriptBuilder.toString());
-        writer.close();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File(outputFile)))) {
+            writer.write(ruleScriptBuilder.toString());
+        }
     }
 
     private static void usage() {
