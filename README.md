@@ -328,9 +328,9 @@ log, use [pmrep(1)](http://man7.org/linux/man-pages/man1/pmrep.1.html)
 for more elaborate reporting (possibly by combining these application
 metrics with JVM, DB, OS, and other PCP provided metrics), or perhaps
 use PCP tools like
-[pcp2elasticsearch](http://man7.org/linux/man-pages/man1/pcp2elasticsearch.1.html),
-[pcp2graphite](http://man7.org/linux/man-pages/man1/pcp2graphite.1.html),
-or [pcp2zabbix](http://man7.org/linux/man-pages/man1/pcp2zabbix.1.html)
+[pcp2elasticsearch(1)](http://man7.org/linux/man-pages/man1/pcp2elasticsearch.1.html),
+[pcp2graphite(1)](http://man7.org/linux/man-pages/man1/pcp2graphite.1.html),
+or [pcp2zabbix(1)](http://man7.org/linux/man-pages/man1/pcp2zabbix.1.html)
 to forward Byteman provided data to external systems for visualization
 and further analysis.
 
