@@ -135,29 +135,25 @@ public class RuleCreator {
     }
 
     private RuleConstructor createEntryRule(String ruleName, String clazz, String method, String action) {
-        RuleConstructor.ClassClause classClause = RuleConstructor.createRule(ruleName);
-        RuleConstructor.MethodClause methodClause = classClause.onClass(clazz);
-        RuleConstructor builder = methodClause
+        return RuleConstructor.createRule(ruleName)
+            .onClass(clazz)
             .inMethod(method)
             .helper(helperClass)
             .atEntry()
             .compile()
             .ifTrue()
             .doAction(action);
-        return builder;
     }
 
     private RuleConstructor createExitRule(String ruleName, String clazz, String method, String action) {
-        RuleConstructor.ClassClause classClause = RuleConstructor.createRule(ruleName);
-        RuleConstructor.MethodClause methodClause = classClause.onClass(clazz);
-        RuleConstructor builder = methodClause
+        return RuleConstructor.createRule(ruleName)
+            .onClass(clazz)
             .inMethod(method)
             .helper(helperClass)
             .atExit()
             .compile()
             .ifTrue()
             .doAction(action);
-        return builder;
     }
 
     public StringBuilder createRules() throws FileNotFoundException, IOException {
