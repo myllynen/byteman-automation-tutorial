@@ -11,7 +11,7 @@ using the standard JMX technology.
 
 Although using _the tool does not necessarily require Byteman
 knowledge_, it is still recommended to check the
-[Byteman Automation Guide](https://github.com/myllynen/byteman-automation-tutorial)
+[Byteman Automation Tutorial](https://github.com/myllynen/byteman-automation-tutorial)
 for basic Byteman introduction and to understand the basic operation of
 this tool.
 
