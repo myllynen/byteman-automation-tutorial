@@ -37,8 +37,8 @@ public class MBean2TXT {
             JMXConnector connector = JMXConnectorFactory.connect(url);
             MBeanServerConnection connection = connector.getMBeanServerConnection();
             while (true) {
-                Thread.sleep(5000);
                 fetchAndPrintItems(connection);
+                Thread.sleep(5000);
             }
         } catch (Exception ex) { ex.printStackTrace(); }
     }
