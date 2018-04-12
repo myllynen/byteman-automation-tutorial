@@ -8,8 +8,8 @@
     <packaging>pom</packaging>
     <version>1.0</version>
 
-    <name>Byteman Profiling Helper Tool : Parent</name>
-    <url>https://github.com/myllynen/byteman-guide/byteman-automation-tool</url>
+    <name>Byteman Automate : Parent</name>
+    <url>https://github.com/myllynen/byteman-automation-guide</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
