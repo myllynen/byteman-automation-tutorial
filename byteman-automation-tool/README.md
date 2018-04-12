@@ -6,7 +6,7 @@
 
 This page introduces a [Byteman](http://byteman.jboss.org/) automation
 tool that allows custom, on-the-fly instrumentation and monitoring of
-unmodified Java applications, and exposing data to any external tool
+_unmodified_ Java applications, and exposing data to any external tool
 using the standard JMX technology.
 
 Although using _the tool does not necessarily require Byteman

@@ -6,7 +6,7 @@
 
 This repository provides a Tutorial Introduction to Byteman, using it to
 develop an Automation Tool which supports custom, on-the-fly
-instrumentation and monitoring of /unmodified/ Java applications. The
+instrumentation and monitoring of _unmodified_ Java applications. The
 tool exposes the captured data to any external tool using the standard
 JMX technology.
 
