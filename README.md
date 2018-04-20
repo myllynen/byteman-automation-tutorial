@@ -197,6 +197,10 @@ writing the results into a file using JSON notation. We also avoid
 relying on method arguments and move the Byteman script to be part of
 the built jar file for easier packaging.
 
+It is recommended to read more about used-defined rule helpers from the
+Byteman Programmer's Guide:
+http://downloads.jboss.org/byteman/latest/byteman-programmers-guide.html#user-defined-rule-helpers.
+
 Our example program is unchanged, but we add a custom helper code
 [JSONHelper.java](tutorial/3-byteman-json/src/main/java/com/example/proftest/JSONHelper.java)
 that is relatively straightforward, it is the
