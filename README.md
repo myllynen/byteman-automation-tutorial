@@ -208,6 +208,10 @@ that is relatively straightforward, it is the
 that connects the events in the application execution flow to our custom
 helper code.
 
+(Note that in these examples we are bundling the application and the
+rule helper in the same package - this would be inconvinient with real
+applications and indeed with the actual tool no such bundling is used.)
+
 Below we see an example run with slightly changed command line options:
 
 ```
