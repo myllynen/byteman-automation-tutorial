@@ -256,6 +256,14 @@ applications under certain circumstances.
 * https://prometheus.io/
 * http://pcp.io/
 
+## Credits
+
+The following people have provided invaluable help and suggestions:
+
+* Andrew Dinn
+* Ondra Chaloupka
+* Timo Friman
+
 ## License
 
 This project is licensed under the GNU GPLv2 with Classpath Exception,
