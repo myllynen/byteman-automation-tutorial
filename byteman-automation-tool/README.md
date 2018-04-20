@@ -27,8 +27,9 @@ provides statistics from Java applications for the following metrics:
 
 Additional Byteman capabilities which could be utilized to customize and
 extend the tool include triggers for variable/object updates, running
-custom code at any point of application code, coordinating application
-threads, evaluating conditions, and so forth. For more details, see
+custom code at any point an of application code, coordinating
+application threads, evaluating conditions, and so forth. For more
+details, see
 [Byteman Programmer's Guide](http://downloads.jboss.org/byteman/latest/byteman-programmers-guide.html).
 
 ## Implementation Overview
@@ -172,16 +173,20 @@ available over JMX getting registered. In case the Byteman agent is
 installed during application startup, the method could be _main_. Here,
 where we will install the agent and the script while the application is
 already running, we need to know any one method that gets invoked to
-have the helper registered, we use the constructor of the test program's
+have the helper registered. We use the constructor of the test program's
 _com.example.proftest.TestUnit_ class for this purpose.
+
+It is recommended to read more about used-defined rule helpers from the
+Byteman Programmer's Guide:
+http://downloads.jboss.org/byteman/latest/byteman-programmers-guide.html#user-defined-rule-helpers.
 
 (Note that depending how Byteman was installed, its scripts may or may
 not have the _.sh_ suffix. NB. The test target is _proftest_, the tool
 is _proftool_. Apologies for the confusion.)
 
-The configuration file [targets.txt](targets.txt) and the Byteman script
-[rules.btm](rules.btm) are included for reference in this
-repository.
+The configuration file [targets.txt](targets.txt) and the generated
+Byteman script [rules.btm](rules.btm) are included for reference in
+this repository.
 
 Now that we have a test application running and the Byteman script
 generated, we install the Byteman agent to provide us application
