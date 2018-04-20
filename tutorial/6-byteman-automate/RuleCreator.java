@@ -58,8 +58,8 @@ public class RuleCreator {
     // Defaults
     private static final String DFL_INPUT_FILE         = "targets.txt";
     private static final String DFL_OUTPUT_FILE        = "rules.btm";
-    private static final String DFL_HELPER_CLASS       = "proftest.JMXHelper";
-    private static final String DFL_REGISTER_CLASS     = "proftest.ProfTest";
+    private static final String DFL_HELPER_CLASS       = "com.example.proftest.JMXHelper";
+    private static final String DFL_REGISTER_CLASS     = "com.example.proftest.ProfTest";
     private static final String DFL_REGISTER_METHOD    = "main";
     private static final String DFL_REGISTER_ACTION    = "registerMBean";
     private static final String DFL_REGISTER_OBJECT    = "byteman:type=Statistics";

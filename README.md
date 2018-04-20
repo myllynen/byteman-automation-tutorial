@@ -60,9 +60,9 @@ clear and to-the-point.
 
 The example program used throughout the rest of the tutorial is
 available in the directory
-[1-example-stdout](tutorial/1-example-stdout), more
+[tutorial/1-example-stdout](tutorial/1-example-stdout), more
 specially it consists of
-[ProfTest.java](tutorial/1-example-stdout/src/main/java/org/jboss/byteman/automate/proftest/ProfTest.java).
+[ProfTest.java](tutorial/1-example-stdout/src/main/java/com/example/proftest/ProfTest.java).
 The program will create objects from the _TestUnit_ class indefinitely
 once per second. The objects will have a lifetime between 1 to 20
 seconds during which time they periodically call the class methods _a_,
@@ -75,7 +75,7 @@ and the average lifetime of the created objects.
 Note that these statistics are provided to allow verifying the later
 results when using Byteman, with real programs these kinds of counters
 and support routines are *not* needed in the application code when using
-with Byteman.
+the Byteman Automation Tool.
 
 Below is a screenshot of compiling, running, and seeing the first update
 from the example program - note the _APP_ marker indicating the source
@@ -115,8 +115,8 @@ export BYTEMAN_HOME=$(pwd)/byteman-download-$vers
 export PATH=$BYTEMAN_HOME/bin:$PATH
 ```
 
-Optionally, after BYTEMAN_HOME has been set, _.bat_ files can be removed
-and _.sh_ suffixes can be removed:
+Optionally, after BYTEMAN_HOME has been set, _.bat_ files and _.sh_
+suffixes can be removed:
 
 ```
 find $BYTEMAN_HOME/bin -name '*.bat' -print | xargs rm -f
@@ -140,12 +140,10 @@ the program and the example Byteman script are similar and correct.
 [Byteman Programmer's Guide](http://downloads.jboss.org/byteman/latest/byteman-programmers-guide.html)
 provides complete description of Byteman script syntax.
 
-From this initial script we see three downsides with this basic approach
+From this initial script we see two downsides with this basic approach
 which will be addressed in the next section: first, for lifetime we are
 relying on a method argument which in a real use case might not be
-present and, second, since casting is not allowed in Byteman scripts we
-need a bit convoluted expression to calculate the average lifetime
-correctly. Lastly, merely printing statistics on a terminal is not
+present. Second, merely printing statistics on a terminal is not
 feasible approach with larger applications.
 
 Here we start the example program and Byteman with it at the same time
@@ -182,7 +180,7 @@ Average lifetime: 10
 Above we now see statistics both from Byteman (marked with _BTM_) and
 from the example program (marker with _APP_). Both statistics are as
 expected and correct. (Minor variations over several test runs may occur
-due do slight timing differences.)
+due to slight timing differences.)
 
 In case there were any issues with Byteman, consider the
 `org.jboss.byteman.debug` and/or `org.jboss.byteman.verbose` environment
@@ -200,7 +198,7 @@ relying on method arguments and move the Byteman script to be part of
 the built jar file for easier packaging.
 
 Our example program is unchanged, but we add a custom helper code
-[JSONHelper.java](tutorial/3-byteman-json/src/main/java/org/jboss/byteman/automate/proftest/JSONHelper.java)
+[JSONHelper.java](tutorial/3-byteman-json/src/main/java/com/example/proftest/JSONHelper.java)
 that is relatively straightforward, it is the
 [rules.btm](tutorial/3-byteman-json/src/main/resources/rules.btm) script
 that connects the events in the application execution flow to our custom
@@ -256,7 +254,7 @@ allows any tool (like [Prometheus](https://prometheus.io/) or
 standard JMX interface to retrieve data collected by the Byteman helper.
 
 The example program still unchanged, our new custom helper code is
-[JMXHelper.java](tutorial/4-byteman-jmx/src/main/java/org/jboss/byteman/automate/proftest/JMXHelper.java).
+[JMXHelper.java](tutorial/4-byteman-jmx/src/main/java/com/example/proftest/JMXHelper.java).
 It is similar than the previous example but instead of writing a JSON
 file it defines a dynamic MBean providing the previous statistics as
 MBean attributes.
@@ -304,8 +302,8 @@ Average lifetime: 8
 ### Byteman and PCP Example (optional)
 
 For the sake of a more complete (command line) example, here is a
-screenshot from a Fedora 28 VM where [PCP](http://pcp.io/) is enabled
-and its plugin for JMX metrics,
+screenshot from a patched Fedora 28 VM where [PCP](http://pcp.io/) is
+enabled and its plugin for JMX metrics,
 [Parfait](https://github.com/performancecopilot/parfait), is configured:
 
 ```
@@ -317,10 +315,16 @@ and its plugin for JMX metrics,
 ```
 
 ```
-$ pmrep --interval 10 --samples 2 mmv.byteman
-  j.b.average_lifetime  j.b.instances  j.b.count_c  j.b.count_b  j.b.count_a
-                    12             10            0            5           28
-                    11             20            4           22           86
+$ pmrep --interval 10 --samples 2 --separate-header --width 5 mmv.byteman
+[ 1] - mmv.byteman.com.example.proftest.instances - count
+[ 2] - mmv.byteman.com.example.proftest.count_c - count
+[ 3] - mmv.byteman.com.example.proftest.count_b - count
+[ 4] - mmv.byteman.com.example.proftest.count_a - count
+[ 5] - mmv.byteman.com.example.proftest.average_lifetime - count
+
+      1      2      3      4      5
+     10      0      8     37      5
+     20      8     27    106      7
 ```
 
 From here, we could use PCP to write the available metrics to an archive
@@ -342,7 +346,7 @@ is not scalable as application implementation details are coded in the
 Byteman script and the JMXHelper.
 
 To address these issues,
-[JMXHelper.java](tutorial/5-byteman-generic/src/main/java/org/jboss/byteman/automate/proftest/JMXHelper.java)
+[JMXHelper.java](tutorial/5-byteman-generic/src/main/java/com/example/proftest/JMXHelper.java)
 is made generic so that it can be used with any application, the metrics
 (MBean attributes) published over JMX are now dynamic. Also the Byteman
 script [rules.btm](tutorial/5-byteman-generic/src/main/resources/rules.btm)
@@ -379,15 +383,18 @@ $ javac MBean2TXT.java
 $ java MBean2TXT
 Application statistics [JMX] - 2018-03-21 16:10:32.168:
 
-Instance count of proftest.TestUnit [proftest.TestUnit.instances.count] : 16
-Live instances of proftest.TestUnit [proftest.TestUnit.instances.live] : 11
-Average instance lifetime of proftest.TestUnit [proftest.TestUnit.lifetime.average] : 5806
-Call count of proftest.TestUnit.a_int_long_void [proftest.TestUnit.a_int_long_void.calls] : 70
-Call count of proftest.TestUnit.c__void [proftest.TestUnit.c__void.calls] : 3
-Call count of proftest.TestUnit.b_int_void [proftest.TestUnit.b_int_void.calls] : 19
-Average execution time of proftest.TestUnit.a_int_long_void [proftest.TestUnit.a_int_long_void.exectime.average] : 0
+Instance count of com.example.proftest.TestUnit [com.example.proftest.TestUnit.instances.count] : 16
+Live instances of com.example.proftest.TestUnit [com.example.proftest.TestUnit.instances.live] : 11
+Average instance lifetime of com.example.proftest.TestUnit [com.example.proftest.TestUnit.lifetime.average] : 5806
+Call count of com.example.proftest.TestUnit.a_int_long_void [com.example.proftest.TestUnit.a_int_long_void.calls] : 70
+Call count of com.example.proftest.TestUnit.c__void [com.example.proftest.TestUnit.c__void.calls] : 3
+Call count of com.example.proftest.TestUnit.b_int_void [com.example.proftest.TestUnit.b_int_void.calls] : 19
+Average execution time of com.example.proftest.TestUnit.a_int_long_void [com.example.proftest.TestUnit.a_int_long_void.exectime.average] : 0
 
 ```
+
+Since our simple test program does not do anything useful, method
+average execution time is (correctly) reported being zero.
 
 We now have a generic tool to publish any statistics we choose from
 unmodified Java applications over JMX! To push things even further, in
@@ -423,16 +430,16 @@ previous example to creat the initial set of target classes and methods:
 
 ```
 $ cd tutorial/6-byteman-automate
-$ ./jarp.sh ../1-example-stdout/target/ProfTest-1.0.jar > targets.txt
+$ ./jarp.sh ../1-example-stdout/target/proftest-01-example-stdout-1.0.jar > targets.txt
 $ vi targets.txt
 $ cat targets.txt
-proftest.TestUnit#a
-proftest.TestUnit#b
-proftest.TestUnit#c
+com.example.proftest.TestUnit#a
+com.example.proftest.TestUnit#b
+com.example.proftest.TestUnit#c
 ```
 
 Now we compile the new standalone helper tool and generate a new Byteman
-script based on the above input (use the _-help_ option for a quick
+script based on the above input (use the _--help_ option for a quick
 help):
 
 ```
@@ -477,19 +484,19 @@ $ javac MBean2TXT.java
 $ java MBean2TXT
 Application statistics [JMX] - 2018-03-21 16:34:38.371:
 
-Instance count of proftest.TestUnit [proftest.TestUnit.instances.count] : 24
-Live instances of proftest.TestUnit [proftest.TestUnit.instances.live] : 12
-Average instance lifetime of proftest.TestUnit [proftest.TestUnit.lifetime.average] : 8006
-Call count of proftest.TestUnit.a_int_long_void [proftest.TestUnit.a_int_long_void.calls] : 140
-Call count of proftest.TestUnit.c__void [proftest.TestUnit.c__void.calls] : 8
-Call count of proftest.TestUnit.b_int_void [proftest.TestUnit.b_int_void.calls] : 37
-Average execution time of proftest.TestUnit.a_int_long_void [proftest.TestUnit.a_int_long_void.exectime.average] : 0
-Average execution time of proftest.TestUnit.c__void [proftest.TestUnit.c__void.exectime.average] : 0
-Average execution time of proftest.TestUnit.b_int_void [proftest.TestUnit.b_int_void.exectime.average] : 0
+Instance count of com.example.proftest.TestUnit [com.example.proftest.TestUnit.instances.count] : 24
+Live instances of com.example.proftest.TestUnit [com.example.proftest.TestUnit.instances.live] : 12
+Average instance lifetime of com.example.proftest.TestUnit [com.example.proftest.TestUnit.lifetime.average] : 8006
+Call count of com.example.proftest.TestUnit.a_int_long_void [com.example.proftest.TestUnit.a_int_long_void.calls] : 140
+Call count of com.example.proftest.TestUnit.c__void [com.example.proftest.TestUnit.c__void.calls] : 8
+Call count of com.example.proftest.TestUnit.b_int_void [com.example.proftest.TestUnit.b_int_void.calls] : 37
+Average execution time of com.example.proftest.TestUnit.a_int_long_void [com.example.proftest.TestUnit.a_int_long_void.exectime.average] : 0
+Average execution time of com.example.proftest.TestUnit.c__void [com.example.proftest.TestUnit.c__void.exectime.average] : 0
+Average execution time of com.example.proftest.TestUnit.b_int_void [com.example.proftest.TestUnit.b_int_void.exectime.average] : 0
 ```
 
-Since our simple test program does not do anything useful, method
-average execution time is (correctly) reported being zero.
+This concludes the tutorial, the actual Byteman Automation Tool will be
+presented in its own page, see the link below.
 
 ## Byteman Automation Tool
 
@@ -501,7 +508,8 @@ Byteman scripts is properly packaged, an example to attach to an already
 running Java application is provided, and some additional explanation
 about Byteman internals are provided.
 
-NB. The tool will use different naming than the _proftest_ used above.
+NB. The actual tool will use more formal naming than
+_com.example.proftest_ used above.
 
 ## License
 

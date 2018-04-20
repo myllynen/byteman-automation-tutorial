@@ -1,5 +1,5 @@
 RULE Increment instance count
-CLASS org.jboss.byteman.automate.proftest.TestUnit
+CLASS com.example.proftest.TestUnit
 METHOD <init>(int)
 AT EXIT
 IF true
@@ -7,7 +7,7 @@ DO incrementCounter("instances");
 ENDRULE
 
 RULE Record instance lifetime
-CLASS org.jboss.byteman.automate.proftest.TestUnit
+CLASS com.example.proftest.TestUnit
 METHOD <init>(int)
 AT EXIT
 BIND lifetime = $1
@@ -16,7 +16,7 @@ DO incrementCounter("allLife", lifetime);
 ENDRULE
 
 RULE Increment call count of method a
-CLASS org.jboss.byteman.automate.proftest.TestUnit
+CLASS com.example.proftest.TestUnit
 METHOD a
 AT ENTRY
 IF true
@@ -24,7 +24,7 @@ DO incrementCounter("countA");
 ENDRULE
 
 RULE Increment call count of method b
-CLASS org.jboss.byteman.automate.proftest.TestUnit
+CLASS com.example.proftest.TestUnit
 METHOD b
 AT ENTRY
 IF true
@@ -32,7 +32,7 @@ DO incrementCounter("countB");
 ENDRULE
 
 RULE Increment call count of method c
-CLASS org.jboss.byteman.automate.proftest.TestUnit
+CLASS com.example.proftest.TestUnit
 METHOD c
 AT ENTRY
 IF true
@@ -40,7 +40,7 @@ DO incrementCounter("countC");
 ENDRULE
 
 RULE Print statistics
-CLASS org.jboss.byteman.automate.proftest.TestUnit
+CLASS com.example.proftest.TestUnit
 METHOD <init>
 AT EXIT
 BIND instances = readCounter("instances");

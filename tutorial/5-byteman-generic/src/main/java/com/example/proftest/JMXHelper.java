@@ -19,7 +19,7 @@
  *
  */
 
-package org.jboss.byteman.automate.proftool;
+package com.example.proftest;
 
 import java.lang.management.ManagementFactory;
 
@@ -64,7 +64,7 @@ public class JMXHelper extends Helper implements DynamicMBean {
         synchronized (mbs) {
             try {
                 ObjectName oname = new ObjectName(name);
-                if (!mbs.isRegistered(oname)) {
+                if (mbs.isRegistered(oname) == false) {
                     mbs.registerMBean(this, oname);
                 }
             } catch (Exception ex) { ex.printStackTrace(); }

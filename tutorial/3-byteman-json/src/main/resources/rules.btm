@@ -1,7 +1,7 @@
-HELPER proftest.JSONHelper
+HELPER com.example.proftest.JSONHelper
 
 RULE Increment instance count
-CLASS proftest.TestUnit
+CLASS com.example.proftest.TestUnit
 METHOD <init>
 AT EXIT
 IF true
@@ -9,7 +9,7 @@ DO incrementInstances();
 ENDRULE
 
 RULE Record instance creation time
-CLASS proftest.TestUnit
+CLASS com.example.proftest.TestUnit
 METHOD <init>
 AT ENTRY
 IF true
@@ -17,7 +17,7 @@ DO recordCreationTime(System.identityHashCode($0));
 ENDRULE
 
 RULE Record instance lifetime
-CLASS proftest.TestUnit
+CLASS com.example.proftest.TestUnit
 METHOD run
 AT EXIT
 IF true
@@ -25,7 +25,7 @@ DO recordInstanceLifetime(System.identityHashCode($0));
 ENDRULE
 
 RULE Increment call count of method a
-CLASS proftest.TestUnit
+CLASS com.example.proftest.TestUnit
 METHOD a
 AT ENTRY
 IF true
@@ -33,7 +33,7 @@ DO incrementCountA();
 ENDRULE
 
 RULE Increment call count of method b
-CLASS proftest.TestUnit
+CLASS com.example.proftest.TestUnit
 METHOD b
 AT ENTRY
 IF true
@@ -41,7 +41,7 @@ DO incrementCountB();
 ENDRULE
 
 RULE Increment call count of method c
-CLASS proftest.TestUnit
+CLASS com.example.proftest.TestUnit
 METHOD c
 AT ENTRY
 IF true
@@ -49,7 +49,7 @@ DO incrementCountC();
 ENDRULE
 
 RULE JSON update frequency
-CLASS proftest.TestUnit
+CLASS com.example.proftest.TestUnit
 METHOD <init>
 AT EXIT
 IF true
@@ -57,7 +57,7 @@ DO incrementCounter("instances");
 ENDRULE
 
 RULE Write JSON
-CLASS proftest.TestUnit
+CLASS com.example.proftest.TestUnit
 METHOD <init>
 AT EXIT
 IF readCounter("instances") % 10 == 0

@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.jboss.byteman.automate</groupId>
+    <groupId>com.example.proftest</groupId>
     <artifactId>proftest-01-example-stdout</artifactId>
     <packaging>jar</packaging>
     <version>1.0</version>
@@ -30,7 +30,7 @@
                         <configuration>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>org.jboss.byteman.automate.proftest.ProfTest</mainClass>
+                                    <mainClass>com.example.proftest.ProfTest</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>

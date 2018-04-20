@@ -19,7 +19,7 @@
  *
  */
 
-package proftool;
+package org.jboss.byteman.automate.proftool;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -60,8 +60,8 @@ public class RuleCreator {
     // Defaults
     private static final String DFL_INPUT_FILE         = "targets.txt";
     private static final String DFL_OUTPUT_FILE        = "rules.btm";
-    private static final String DFL_HELPER_CLASS       = "proftool.JMXHelper";
-    private static final String DFL_REGISTER_CLASS     = "proftool.ProfTool";
+    private static final String DFL_HELPER_CLASS       = "org.jboss.byteman.automate.proftool.JMXHelper";
+    private static final String DFL_REGISTER_CLASS     = "org.jboss.byteman.automate.proftool.ProfTool";
     private static final String DFL_REGISTER_METHOD    = "main";
     private static final String DFL_REGISTER_ACTION    = "registerMBean";
     private static final String DFL_REGISTER_OBJECT    = "byteman:type=Statistics";

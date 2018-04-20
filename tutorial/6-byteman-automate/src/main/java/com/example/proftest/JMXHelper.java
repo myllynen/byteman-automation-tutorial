@@ -19,7 +19,7 @@
  *
  */
 
-package org.jboss.byteman.automate.proftool;
+package com.example.proftest;
 
 import java.lang.management.ManagementFactory;
 

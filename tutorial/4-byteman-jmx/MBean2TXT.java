@@ -49,7 +49,7 @@ public class MBean2TXT {
         System.out.println(":\n");
 
         try {
-            ObjectName query = new ObjectName("proftest:type=Statistics");
+            ObjectName query = new ObjectName("com.example.proftest:type=Statistics");
             Set<ObjectName> mbeanNames = connection.queryNames(query, null);
             for (ObjectName mbean: mbeanNames) {
                 try {

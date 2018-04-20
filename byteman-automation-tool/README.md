@@ -101,8 +101,8 @@ export BYTEMAN_HOME=$(pwd)/byteman-download-$vers
 export PATH=$BYTEMAN_HOME/bin:$PATH
 ```
 
-Optionally, after BYTEMAN_HOME has been set, _.bat_ files can be removed
-and _.sh_ suffixes can be removed:
+Optionally, after BYTEMAN_HOME has been set, _.bat_ files and _.sh_
+suffixes can be removed:
 
 ```
 find $BYTEMAN_HOME/bin -name '*.bat' -print | xargs rm -f
@@ -112,7 +112,7 @@ find $BYTEMAN_HOME/bin -name '*.sh' -print | sed 'p;s/\.sh//' | xargs -n 2 mv
 ## Byteman Automation Example
 
 After cloning this repository we launch
-[a simple test program](../tutorial/1-example-stdout/src/main/java/org/jboss/byteman/automate/proftest/ProfTest.java)
+[a simple test program](../tutorial/1-example-stdout/src/main/java/com/example/proftest/ProfTest.java)
 later to be used as a guinea pig in the later example:
 
 ```
@@ -144,23 +144,23 @@ $ cd byteman-automation-tool
 $ ./jarp.sh ../tutorial/1-example-stdout/target/proftest-01-example-stdout-1.0.jar > targets.txt
 $ vi targets.txt
 $ cat targets.txt
-org.jboss.byteman.automate.proftest.TestUnit#a
-org.jboss.byteman.automate.proftest.TestUnit#b
-org.jboss.byteman.automate.proftest.TestUnit#c
+com.example.proftest.TestUnit#a
+com.example.proftest.TestUnit#b
+com.example.proftest.TestUnit#c
 $ mvn package
 $ java \
     -jar ./target/proftool-1.0.jar \
       --input-file targets.txt \
-      --register-class proftest.TestUnit \
+      --register-class com.example.proftest.TestUnit \
       --register-method '<init>' \
       --instance-counts \
       --instance-lifetimes \
       --call-counts \
       --call-exectimes \
       --output-file rules.btm
-$ appdir=../tutorial/1-example-stdout/target
+$ appjar=../tutorial/1-example-stdout/target/proftest-01-example-stdout-1.0.jar
 $ tooljar=./target/proftool-1.0.jar
-$ bmcheck -cp $appdir:$tooljar -v rules.btm
+$ bmcheck -cp $appjar:$tooljar -v rules.btm
 ```
 
 It is worth explaining the _-register-class_ and _-register-method_
@@ -173,7 +173,7 @@ installed during application startup, the method could be _main_. Here,
 where we will install the agent and the script while the application is
 already running, we need to know any one method that gets invoked to
 have the helper registered, we use the constructor of the test program's
-_proftest.TestUnit_ class for this purpose.
+_com.example.proftest.TestUnit_ class for this purpose.
 
 (Note that depending how Byteman was installed, its scripts may or may
 not have the _.sh_ suffix. NB. The test target is _proftest_, the tool
@@ -190,8 +190,8 @@ application (prior Java 9, attaching to a JVM requires the _tools.jar_
 to be available):
 
 ```
-$ bminstall $(jps -l | awk '/ProfTest/ {print $1}')
-$ bmsubmit -s $(pwd)/target/ProfTool-1.0.jar
+$ bminstall $(jps -l | awk '/proftest-01-example-stdout/ {print $1}')
+$ bmsubmit -s $(pwd)/target/proftool-1.0.jar
 $ bmsubmit -c
 $ bmsubmit -l rules.btm
 $ bmsubmit -l
@@ -217,15 +217,15 @@ $ javac MBean2TXT.java
 $ java MBean2TXT
 Application statistics [JMX] - 2018-03-21 16:41:22.152:
 
-Instance count of proftest.TestUnit [proftest.TestUnit.instances.count] : 24
-Live instances of proftest.TestUnit [proftest.TestUnit.instances.live] : 12
-Average instance lifetime of proftest.TestUnit [proftest.TestUnit.lifetime.average] : 8006
-Call count of proftest.TestUnit.a_int_long_void [proftest.TestUnit.a_int_long_void.calls] : 140
-Call count of proftest.TestUnit.c__void [proftest.TestUnit.c__void.calls] : 8
-Call count of proftest.TestUnit.b_int_void [proftest.TestUnit.b_int_void.calls] : 37
-Average execution time of proftest.TestUnit.a_int_long_void [proftest.TestUnit.a_int_long_void.exectime.average] : 0
-Average execution time of proftest.TestUnit.c__void [proftest.TestUnit.c__void.exectime.average] : 0
-Average execution time of proftest.TestUnit.b_int_void [proftest.TestUnit.b_int_void.exectime.average] : 0
+Instance count of com.example.proftest.TestUnit [com.example.proftest.TestUnit.instances.count] : 24
+Live instances of com.example.proftest.TestUnit [com.example.proftest.TestUnit.instances.live] : 12
+Average instance lifetime of com.example.proftest.TestUnit [com.example.proftest.TestUnit.lifetime.average] : 8006
+Call count of com.example.proftest.TestUnit.a_int_long_void [com.example.proftest.TestUnit.a_int_long_void.calls] : 140
+Call count of com.example.proftest.TestUnit.c__void [com.example.proftest.TestUnit.c__void.calls] : 8
+Call count of com.example.proftest.TestUnit.b_int_void [com.example.proftest.TestUnit.b_int_void.calls] : 37
+Average execution time of com.example.proftest.TestUnit.a_int_long_void [com.example.proftest.TestUnit.a_int_long_void.exectime.average] : 0
+Average execution time of com.example.proftest.TestUnit.c__void [com.example.proftest.TestUnit.c__void.exectime.average] : 0
+Average execution time of com.example.proftest.TestUnit.b_int_void [com.example.proftest.TestUnit.b_int_void.exectime.average] : 0
 ```
 
 Since our test program does not do anything concrete, method average
@@ -234,7 +234,7 @@ execution time is (correctly) reported being zero.
 ## Summary
 
 This page introduced an automated toolset for instrumenting and
-monitoring unmodified Java applications on-the-fly. The tool can be
+monitoring _unmodified_ Java applications on-the-fly. The tool can be
 customized and extended and can be considered as complementary to other
 available alternatives and may greatly increase observability of
 applications under certain circumstances.
