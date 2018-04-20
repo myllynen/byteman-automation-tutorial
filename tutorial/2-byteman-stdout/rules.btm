@@ -43,8 +43,10 @@ RULE Print statistics
 CLASS org.jboss.byteman.automate.proftest.TestUnit
 METHOD <init>
 AT EXIT
-BIND average_lifetime:int = Math.round(Float.valueOf(Integer.toString(readCounter("allLife"))) / readCounter("instances"));
-IF readCounter("instances") % 10 == 0
+BIND instances = readCounter("instances");
+     allLife : float = readCounter("allLife");
+     average_lifetime = Math.round(allLife / instances);
+IF instances % 10 == 0
 DO trace("ProfTest statistics [BTM] - ");
    trace("" + new java.sql.Timestamp(System.currentTimeMillis()));
    trace(":\n\n");
