@@ -519,6 +519,14 @@ about Byteman internals are provided.
 NB. The actual tool will use more formal naming than
 _com.example.proftest_ used above.
 
+## Credits
+
+The following people have provided invaluable help and suggestions:
+
+* Andrew Dinn
+* Ondra Chaloupka
+* Timo Friman
+
 ## License
 
 This project is licensed under the GNU GPLv2 with Classpath Exception,
