@@ -52,7 +52,7 @@ public class JMXHelper extends Helper implements DynamicMBean {
     private static final ConcurrentHashMap<Integer, Long> birthdays = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, LongAdder> lifetimes = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, LongAdder> callCounts = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<Long, Long> callTimes = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, Long> callTimes = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, LongAdder> execTimes = new ConcurrentHashMap<>();
 
     public JMXHelper(Rule rule) {
@@ -84,7 +84,7 @@ public class JMXHelper extends Helper implements DynamicMBean {
 
         // Instance count, live instances
         for (Map.Entry<String, LongAdder> e: instances.entrySet()) {
-            ai = new MBeanAttributeInfo(cleanName(e.getKey()) + ".instances.count", longName, "Instance count of " + cleanName(e.getKey()), true, false, false);
+            ai = new MBeanAttributeInfo(cleanName(e.getKey()) + ".instances.total", longName, "Total instances of " + cleanName(e.getKey()), true, false, false);
             attributes.add(ai);
             ai = new MBeanAttributeInfo(cleanName(e.getKey()) + ".instances.live", longName, "Live instances of " + cleanName(e.getKey()), true, false, false);
             attributes.add(ai);
@@ -112,8 +112,8 @@ public class JMXHelper extends Helper implements DynamicMBean {
     }
 
     public Object getAttribute(String attribute) throws AttributeNotFoundException, MBeanException, ReflectionException {
-        if (attribute.endsWith(".instances.count")) {
-            String key = attribute.substring(0, attribute.length() - ".instances.count".length());
+        if (attribute.endsWith(".instances.total")) {
+            String key = attribute.substring(0, attribute.length() - ".instances.total".length());
             return instances.get(key) != null ? instances.get(key).sum() : 0;
         } else if (attribute.endsWith(".instances.live")) {
             String key = attribute.substring(0, attribute.length() - ".instances.live".length());
@@ -184,11 +184,11 @@ public class JMXHelper extends Helper implements DynamicMBean {
     }
 
     public void recordMethodCallTime(String clazz, String method) {
-        callTimes.put(Thread.currentThread().getId(), System.currentTimeMillis());
+        callTimes.put(clazz + sep + method + Long.toString(Thread.currentThread().getId()), System.currentTimeMillis());
     }
 
     public void recordMethodExecTime(String clazz, String method) {
-        long id = Thread.currentThread().getId();
+        String id = clazz + sep + method + Long.toString(Thread.currentThread().getId());
         long exectime = System.currentTimeMillis() - callTimes.get(id);
         execTimes.computeIfAbsent(cleanName(clazz + sep + method), k -> new LongAdder()).add(exectime);
         callTimes.remove(id);

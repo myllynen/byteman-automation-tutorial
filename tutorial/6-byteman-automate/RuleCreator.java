@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -128,7 +129,7 @@ public class RuleCreator {
             .helper(helperClass)
             .atEntry()
             .ifTrue()
-            .doAction(action + "(\"" + objectName + "\")");
+            .doAction(action + "(\"" + objectName + "\");");
     }
 
     private RuleConstructor createEntryRule(String ruleName, String clazz, String method, String action) {
@@ -158,7 +159,11 @@ public class RuleCreator {
             ruleScriptBuilder.append(createRegisterMBeanRule(registerClass, registerMethod, registerAction, registerObject).build());
 
             String prevClazz = null;
+            HashSet<String> lines = new HashSet<>();
             for (String line; (line = br.readLine()) != null; ) {
+                if (!lines.add(line)) {
+                    continue;
+                }
                 String clazz = line.substring(0, line.indexOf("#"));
                 String method = line.substring(line.indexOf("#") + 1);
 
@@ -210,7 +215,7 @@ public class RuleCreator {
         out.println("Usage:");
         out.println("  " + programName + " [options]");
         out.println("where [options] include:");
-        out.println("  " + OPT_HELP + "                  Print this message");
+        out.println("  " + OPT_HELP_LONG + "                  Print this message");
         out.println("  " + OPT_INPUT_FILE + "            Specify input file to read monitored targets from");
         out.println("  " + OPT_OUTPUT_FILE + "           Specify output file to write created rule script to");
         out.println("  " + OPT_HELPER_CLASS + "          Specify Byteman helper class to use in created script");
