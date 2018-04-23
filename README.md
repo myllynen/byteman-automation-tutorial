@@ -12,11 +12,12 @@ JMX technology.
 
 The tutorial starts with a simple Hello World like example and proceeds
 to eventually introduce a low overhead, easily customizable tool to
-provide statistics from Java applications, initially supporting the
-following metrics over JMX:
+provide statistics from Java applications, supporting the following
+metrics over JMX (the actual tool supports addiotional metrics):
 
 * method average execution time
-* number of live instances of a class
+* number of live instances of a class (for classes implementing
+  [Runnable](https://docs.oracle.com/javase/10/docs/api/java/lang/Runnable.html))
 * number of objects instantiated from a class
 * number of calls for any selected instance methods
 * instance average lifetime (for classes implementing
@@ -391,7 +392,7 @@ $ javac MBean2TXT.java
 $ java MBean2TXT
 Application statistics [JMX] - 2018-03-21 16:10:32.168:
 
-Instance count of com.example.proftest.TestUnit [com.example.proftest.TestUnit.instances.count] : 16
+Total instances of com.example.proftest.TestUnit [com.example.proftest.TestUnit.instances.total] : 16
 Live instances of com.example.proftest.TestUnit [com.example.proftest.TestUnit.instances.live] : 11
 Average instance lifetime of com.example.proftest.TestUnit [com.example.proftest.TestUnit.lifetime.average] : 5806
 Call count of com.example.proftest.TestUnit.a_int_long_void [com.example.proftest.TestUnit.a_int_long_void.calls] : 70
@@ -402,7 +403,8 @@ Average execution time of com.example.proftest.TestUnit.a_int_long_void [com.exa
 ```
 
 Since our simple test program does not do anything useful, method
-average execution time is (correctly) reported being zero.
+average execution time is (correctly) reported being zero. The actual
+tool supports also reporting minimum and maximum method execution times.
 
 We now have a generic tool to publish any statistics we choose from
 unmodified Java applications over JMX! To push things even further, in
@@ -492,7 +494,7 @@ $ javac MBean2TXT.java
 $ java MBean2TXT
 Application statistics [JMX] - 2018-03-21 16:34:38.371:
 
-Instance count of com.example.proftest.TestUnit [com.example.proftest.TestUnit.instances.count] : 24
+Total instances of com.example.proftest.TestUnit [com.example.proftest.TestUnit.instances.total] : 24
 Live instances of com.example.proftest.TestUnit [com.example.proftest.TestUnit.instances.live] : 12
 Average instance lifetime of com.example.proftest.TestUnit [com.example.proftest.TestUnit.lifetime.average] : 8006
 Call count of com.example.proftest.TestUnit.a_int_long_void [com.example.proftest.TestUnit.a_int_long_void.calls] : 140
@@ -511,10 +513,12 @@ presented in its own page, see the link below.
 The Byteman Automation Tool is introduced at
 https://github.com/myllynen/byteman-automation-tutorial/tree/master/byteman-automation-tool.
 
-Otherwise it is like the last example above but the helper to create
-Byteman scripts is properly packaged, an example to attach to an already
-running Java application is provided, and some additional explanation
-about Byteman internals are provided.
+The tool is based on the same appoarch as the above example but supports
+additional metrics (with additional command line parameters), takes into
+account exits via exceptions, the helper to create Byteman scripts is
+properly packaged, an example to attach to an already running Java
+application is provided, and some additional details about Byteman
+internals are explained.
 
 NB. The actual tool will use more formal naming than
 _com.example.proftest_ used above.

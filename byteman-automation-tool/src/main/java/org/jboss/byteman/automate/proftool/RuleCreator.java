@@ -19,6 +19,10 @@
  *
  */
 
+/*
+ * NB. Consider converting to use Commons CLI if adding more options.
+ */
+
 package org.jboss.byteman.automate.proftool;
 
 import java.io.BufferedReader;
@@ -31,6 +35,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -53,9 +58,14 @@ public class RuleCreator {
     private static final String OPT_REGISTER_ACTION    = "--register-action";
     private static final String OPT_REGISTER_OBJECT    = "--register-object";
     private static final String OPT_INSTANCE_COUNTS    = "--instance-counts";
-    private static final String OPT_INSTANCE_LIFETIMES = "--instance-lifetimes";
+    private static final String OPT_INST_LIFETIMES_MIN = "--inst-lifetimes-min";
+    private static final String OPT_INST_LIFETIMES_AVG = "--inst-lifetimes-avg";
+    private static final String OPT_INST_LIFETIMES_MAX = "--inst-lifetimes-max";
     private static final String OPT_CALL_COUNTS        = "--call-counts";
-    private static final String OPT_CALL_EXECTIMES     = "--call-exectimes";
+    private static final String OPT_CALL_EXECTIMES_MIN = "--call-exectimes-min";
+    private static final String OPT_CALL_EXECTIMES_AVG = "--call-exectimes-avg";
+    private static final String OPT_CALL_EXECTIMES_MAX = "--call-exectimes-max";
+    private static final String OPT_CALL_EXIT_EXCEPT   = "--call-exit-except";
 
     // Defaults
     private static final String DFL_INPUT_FILE         = "targets.txt";
@@ -75,9 +85,14 @@ public class RuleCreator {
     private String registerAction                      = DFL_REGISTER_ACTION;
     private String registerObject                      = DFL_REGISTER_OBJECT;
     private boolean instanceCounts                     = false;
-    private boolean instanceLifetimes                  = false;
+    private boolean instanceLifetimesMin               = false;
+    private boolean instanceLifetimesAvg               = false;
+    private boolean instanceLifetimesMax               = false;
     private boolean callCounts                         = false;
-    private boolean callExectimes                      = false;
+    private boolean callExecTimesMin                   = false;
+    private boolean callExecTimesAvg                   = false;
+    private boolean callExecTimesMax                   = false;
+    private boolean callExitExcept                     = false;
 
     public RuleCreator(String[] args) {
         parseArguments(args);
@@ -89,14 +104,25 @@ public class RuleCreator {
             usage();
             System.exit(0);
         }
-        if (argsList.contains(OPT_INSTANCE_COUNTS))    instanceCounts = true;
-        if (argsList.contains(OPT_INSTANCE_LIFETIMES)) instanceLifetimes = true;
-        if (argsList.contains(OPT_CALL_COUNTS))        callCounts = true;
-        if (argsList.contains(OPT_CALL_EXECTIMES))     callExectimes = true;
+        if (argsList.contains(OPT_INSTANCE_COUNTS))       instanceCounts = true;
+        if (argsList.contains(OPT_INST_LIFETIMES_MIN))    instanceLifetimesMin = true;
+        if (argsList.contains(OPT_INST_LIFETIMES_AVG))    instanceLifetimesAvg = true;
+        if (argsList.contains(OPT_INST_LIFETIMES_MAX))    instanceLifetimesMax = true;
+        if (instanceLifetimesMin || instanceLifetimesMax) instanceLifetimesAvg = true;
+        if (argsList.contains(OPT_CALL_COUNTS))           callCounts = true;
+        if (argsList.contains(OPT_CALL_EXECTIMES_MIN))    callExecTimesMin = true;
+        if (argsList.contains(OPT_CALL_EXECTIMES_AVG))    callExecTimesAvg = true;
+        if (argsList.contains(OPT_CALL_EXECTIMES_MAX))    callExecTimesMax = true;
+        if (callExecTimesMin || callExecTimesMax)         callExecTimesAvg = true;
+        if (argsList.contains(OPT_CALL_EXIT_EXCEPT))      callExitExcept = true;
+        if (callExecTimesAvg)                             callExitExcept = true;
         for (Iterator<String> iter = argsList.iterator(); iter.hasNext(); ) {
             String arg = iter.next();
-            if (arg.equals(OPT_INSTANCE_COUNTS) || arg.equals(OPT_INSTANCE_LIFETIMES) ||
-                arg.equals(OPT_CALL_COUNTS) || arg.equals(OPT_CALL_EXECTIMES)) {
+            if (arg.equals(OPT_INSTANCE_COUNTS) || arg.equals(OPT_INST_LIFETIMES_AVG) ||
+                arg.equals(OPT_INST_LIFETIMES_MIN) || arg.equals(OPT_INST_LIFETIMES_MAX) ||
+                arg.equals(OPT_CALL_COUNTS) || arg.equals(OPT_CALL_EXECTIMES_AVG) ||
+                arg.equals(OPT_CALL_EXECTIMES_MIN) || arg.equals(OPT_CALL_EXECTIMES_MAX) ||
+                arg.equals(OPT_CALL_EXIT_EXCEPT)) {
                 continue;
             }
             try {
@@ -131,7 +157,12 @@ public class RuleCreator {
             .atEntry()
             .compile()
             .ifTrue()
-            .doAction(action + "(\"" + objectName + "\")");
+            .doAction(action + "(\"" + objectName + "\", " +
+                String.valueOf(instanceLifetimesMin) + ", " +
+                String.valueOf(instanceLifetimesMax) + ", " +
+                String.valueOf(callExecTimesMin) + ", " +
+                String.valueOf(callExecTimesMax) + ", " +
+                String.valueOf(callExitExcept) + ");");
     }
 
     private RuleConstructor createEntryRule(String ruleName, String clazz, String method, String action) {
@@ -156,6 +187,17 @@ public class RuleCreator {
             .doAction(action);
     }
 
+    private RuleConstructor createExceptRule(String ruleName, String clazz, String method, String action) {
+        return RuleConstructor.createRule(ruleName)
+            .onClass(clazz)
+            .inMethod(method)
+            .helper(helperClass)
+            .atExceptionExit()
+            .compile()
+            .ifTrue()
+            .doAction(action);
+    }
+
     public StringBuilder createRules() throws FileNotFoundException, IOException {
         StringBuilder ruleScriptBuilder = new StringBuilder();
         try (BufferedReader br = new BufferedReader(new FileReader(inputFile))) {
@@ -163,7 +205,11 @@ public class RuleCreator {
             ruleScriptBuilder.append(createRegisterMBeanRule(registerClass, registerMethod, registerAction, registerObject).build());
 
             String prevClazz = null;
+            HashSet<String> lines = new HashSet<>();
             for (String line; (line = br.readLine()) != null; ) {
+                if (!lines.add(line)) {
+                    continue;
+                }
                 String clazz = line.substring(0, line.indexOf("#"));
                 String method = line.substring(line.indexOf("#") + 1);
 
@@ -173,14 +219,26 @@ public class RuleCreator {
                         String action = "incrementInstanceCount($CLASS);";
                         ruleScriptBuilder.append(createExitRule(ruleName, clazz, "<init>", action).build());
                     }
-                    if (instanceLifetimes) {
+                    if (instanceLifetimesAvg) {
                         String ruleName = "Record instance creation time: " + clazz;
                         String action = ("recordInstanceCreationTime($CLASS, $0);");
                         ruleScriptBuilder.append(createEntryRule(ruleName, clazz, "<init>", action).build());
 
-                        ruleName = "Record instance lifetime: " + clazz;
+                        ruleName = "Record instance lifetime, no exceptions: " + clazz;
                         action = "recordInstanceLifetime($CLASS, $0);";
                         ruleScriptBuilder.append(createExitRule(ruleName, clazz, "run", action).build());
+
+                        ruleName = "Record instance lifetime, if exceptions: " + clazz;
+                        action = "recordInstanceLifetime($CLASS, $0);";
+                        ruleScriptBuilder.append(createExceptRule(ruleName, clazz, "run", action).build());
+                    } else {
+                        String ruleName = "Decrement live instance count, no exceptions: " + clazz;
+                        String action = ("decrementLiveInstanceCount($CLASS);");
+                        ruleScriptBuilder.append(createExitRule(ruleName, clazz, "run", action).build());
+
+                        ruleName = "Decrement live instance count, if exceptions: " + clazz;
+                        action = ("decrementLiveInstanceCount($CLASS);");
+                        ruleScriptBuilder.append(createExceptRule(ruleName, clazz, "run", action).build());
                     }
                 }
                 prevClazz = clazz;
@@ -190,7 +248,7 @@ public class RuleCreator {
                     String action = "incrementMethodCallCount($CLASS, $METHOD);";
                     ruleScriptBuilder.append(createEntryRule(ruleName, clazz, method, action).build());
                 }
-                if (callExectimes) {
+                if (callExecTimesAvg) {
                     String ruleName = "Record call time of method: " + clazz + " - " + method;
                     String action = "recordMethodCallTime($CLASS, $METHOD);";
                     ruleScriptBuilder.append(createEntryRule(ruleName, clazz, method, action).build());
@@ -198,6 +256,11 @@ public class RuleCreator {
                     ruleName = "Record execution time of method: " + clazz + " - " + method;
                     action = "recordMethodExecTime($CLASS, $METHOD);";
                     ruleScriptBuilder.append(createExitRule(ruleName, clazz, method, action).build());
+                }
+                if (callExitExcept) {
+                    String ruleName = "Exits via exceptions from method: " + clazz + " - " + method;
+                    String action = "incrementMethodExitExceptCount($CLASS, $METHOD);";
+                    ruleScriptBuilder.append(createExceptRule(ruleName, clazz, method, action).build());
                 }
             }
         }
@@ -215,7 +278,7 @@ public class RuleCreator {
         out.println("Usage:");
         out.println("  " + programName + " [options]");
         out.println("where [options] include:");
-        out.println("  " + OPT_HELP + "                  Print this message");
+        out.println("  " + OPT_HELP_LONG + "                  Print this message");
         out.println("  " + OPT_INPUT_FILE + "            Specify input file to read monitored targets from");
         out.println("  " + OPT_OUTPUT_FILE + "           Specify output file to write created rule script to");
         out.println("  " + OPT_HELPER_CLASS + "          Specify Byteman helper class to use in created script");
@@ -224,9 +287,14 @@ public class RuleCreator {
         out.println("  " + OPT_REGISTER_ACTION + "       Specify action (method) to register dynamic MBean with");
         out.println("  " + OPT_REGISTER_OBJECT + "       Specify object (name) to register dynamic MBean with");
         out.println("  " + OPT_INSTANCE_COUNTS + "       Write rules for monitoring instance counts");
-        out.println("  " + OPT_INSTANCE_LIFETIMES + "    Write rules for monitoring instance lifetimes");
+        out.println("  " + OPT_INST_LIFETIMES_MIN + "    Write rules for monitoring instance min lifetimes");
+        out.println("  " + OPT_INST_LIFETIMES_AVG + "    Write rules for monitoring instance avg lifetimes");
+        out.println("  " + OPT_INST_LIFETIMES_MAX + "    Write rules for monitoring instance max lifetimes");
         out.println("  " + OPT_CALL_COUNTS + "           Write rules for monitoring method call counts");
-        out.println("  " + OPT_CALL_EXECTIMES + "        Write rules for monitoring method call execution times");
+        out.println("  " + OPT_CALL_EXECTIMES_MIN + "    Write rules for monitoring method call min exec times");
+        out.println("  " + OPT_CALL_EXECTIMES_AVG + "    Write rules for monitoring method call avg exec times");
+        out.println("  " + OPT_CALL_EXECTIMES_MAX + "    Write rules for monitoring method call max exec times");
+        out.println("  " + OPT_CALL_EXIT_EXCEPT + "      Write rules for monitoring method exits via exceptions");
     }
 
     public static void main(String[] args) {

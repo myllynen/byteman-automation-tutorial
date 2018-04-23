@@ -5,7 +5,7 @@ AT ENTRY
 HELPER org.jboss.byteman.automate.proftool.JMXHelper
 COMPILE
 IF true
-DO registerMBean("byteman:type=Statistics")
+DO registerMBean("byteman:type=Statistics", true, true, true, true, true);
 ENDRULE
 RULE Increment instance count: com.example.proftest.TestUnit
 CLASS com.example.proftest.TestUnit
@@ -25,10 +25,19 @@ COMPILE
 IF true
 DO recordInstanceCreationTime($CLASS, $0);
 ENDRULE
-RULE Record instance lifetime: com.example.proftest.TestUnit
+RULE Record instance lifetime, no exceptions: com.example.proftest.TestUnit
 CLASS com.example.proftest.TestUnit
 METHOD run
 AT EXIT
+HELPER org.jboss.byteman.automate.proftool.JMXHelper
+COMPILE
+IF true
+DO recordInstanceLifetime($CLASS, $0);
+ENDRULE
+RULE Record instance lifetime, if exceptions: com.example.proftest.TestUnit
+CLASS com.example.proftest.TestUnit
+METHOD run
+AT EXCEPTION EXIT
 HELPER org.jboss.byteman.automate.proftool.JMXHelper
 COMPILE
 IF true
@@ -61,6 +70,15 @@ COMPILE
 IF true
 DO recordMethodExecTime($CLASS, $METHOD);
 ENDRULE
+RULE Exits via exceptions from method: com.example.proftest.TestUnit - a
+CLASS com.example.proftest.TestUnit
+METHOD a
+AT EXCEPTION EXIT
+HELPER org.jboss.byteman.automate.proftool.JMXHelper
+COMPILE
+IF true
+DO incrementMethodExitExceptCount($CLASS, $METHOD);
+ENDRULE
 RULE Increment call count: com.example.proftest.TestUnit - b
 CLASS com.example.proftest.TestUnit
 METHOD b
@@ -88,6 +106,15 @@ COMPILE
 IF true
 DO recordMethodExecTime($CLASS, $METHOD);
 ENDRULE
+RULE Exits via exceptions from method: com.example.proftest.TestUnit - b
+CLASS com.example.proftest.TestUnit
+METHOD b
+AT EXCEPTION EXIT
+HELPER org.jboss.byteman.automate.proftool.JMXHelper
+COMPILE
+IF true
+DO incrementMethodExitExceptCount($CLASS, $METHOD);
+ENDRULE
 RULE Increment call count: com.example.proftest.TestUnit - c
 CLASS com.example.proftest.TestUnit
 METHOD c
@@ -114,4 +141,13 @@ HELPER org.jboss.byteman.automate.proftool.JMXHelper
 COMPILE
 IF true
 DO recordMethodExecTime($CLASS, $METHOD);
+ENDRULE
+RULE Exits via exceptions from method: com.example.proftest.TestUnit - c
+CLASS com.example.proftest.TestUnit
+METHOD c
+AT EXCEPTION EXIT
+HELPER org.jboss.byteman.automate.proftool.JMXHelper
+COMPILE
+IF true
+DO incrementMethodExitExceptCount($CLASS, $METHOD);
 ENDRULE
