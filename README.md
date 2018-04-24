@@ -426,7 +426,7 @@ statistics from unmodified Java applications. While the solution is
 already generic, manually creating and updating potentially a large set
 of Byteman scripts would be tedious and error prone. It would also
 impose a requirent for anyone wanting to use the tool for tracing to be
-rather familiar with Byteman, ideally only the overall knowledge of the
+rather familiar with Byteman, ideally only overall knowledge of the
 application under investigation would be needed.
 
 The Byteman JMX helper from the previous example is unchanged but a new

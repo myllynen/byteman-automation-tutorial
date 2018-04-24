@@ -28,20 +28,19 @@ provides statistics from Java applications for the following metrics:
 
 Additional Byteman capabilities which could be utilized to customize and
 extend the tool include triggers for variable/object updates, running
-custom code at any point an of application code, coordinating
-application threads, evaluating conditions, and so forth. For more
-details, see
+custom code at any point an of application code, evaluating conditions,
+and so forth. For more details, see
 [Byteman Programmer's Guide](http://downloads.jboss.org/byteman/latest/byteman-programmers-guide.html).
 
 ## Implementation Overview
 
 The tool reads a plain text configuration file listing classes and
-methods where to install the instrumentation selected on command line.
-It then creates a Byteman script to leverage Byteman's bytecode
+methods where to install the instrumentation selected with command line
+options. It then creates a Byteman script to leverage Byteman's bytecode
 manipulation capabilities to transform starting or running Java
 applications. Byteman itself uses the
-[ASM framework](http://asm.ow2.org/) and is loaded as a Java agent
-using the
+[ASM framework](http://asm.ow2.org/) and is loaded as a Java agent using
+the
 [Instrumentation API](https://docs.oracle.com/javase/10/docs/api/java/lang/instrument/package-summary.html)
 at application startup or at any point of application lifecycle with
 Byteman convenience scripts leveraging the
@@ -54,7 +53,7 @@ statistics available over JMX. Unlike with, for example,
 [Proxy](https://docs.oracle.com/javase/10/docs/api/java/lang/reflect/Proxy.html)
 or
 [Prometheus instrumentation](https://prometheus.io/docs/practices/instrumentation/),
-tracing can be extended to new areas of application or libraries
+tracing can be extended to new areas of an application or libraries
 on-the-fly without any code changes or even without restarting the
 application.
 
@@ -63,9 +62,9 @@ Byteman or the tool do not rely on
 [JVM TI](https://en.wikipedia.org/wiki/Java_Virtual_Machine_Tools_Interface)
 so they are platform agnostic and supported by all modern JVMs.
 
-This approach provides the following benefits and options:
+The above approach provides the following benefits and options:
 
-* no application code changes needed
+* no application code changes needed to monitor application internals
 * can be applied to components for which source is not available
 * can be enabled on class/method level, no one giant switch
 * can be enabled and disabled on-the-fly as needed
@@ -78,7 +77,7 @@ For example, the following aspects might need to be considered:
 
 * using containers or not
 * test or production environment
-* easily reproducible or once-a-month issue
+* easily reproducible or "once-a-month" issue
 * possible to use other troubleshooting tools or not
 * are application/component developers reachable or not
 * previously added instrumentation present in application code or not
@@ -86,7 +85,7 @@ For example, the following aspects might need to be considered:
 In-depth considerations of these aspects are out of scope for this
 document and are merely mentioned as a base for discussions which of the
 many available methodologies and tools to use in any particular
-situation; this tool is often not the right choice but may be very
+situation; this tool is often not the best choice but may be very
 helpful under certain circumstances.
 
 ## Byteman Installation
@@ -223,8 +222,8 @@ where [options] include:
 Now that we have a test application running and the Byteman script
 generated, we install the Byteman agent to provide us application
 metrics from the selected targets with no interruption for the running
-application (prior Java 9, attaching to a JVM requires the _tools.jar_
-to be available):
+application (prior Java 9, attaching to a JVM requires the separate
+_tools.jar_ to be available):
 
 ```
 $ bminstall $(jps -l | awk '/proftest-01-example-stdout/ {print $1}')
@@ -274,8 +273,11 @@ Average execution time of com.example.proftest.TestUnit.b_int_void [com.example.
 Maximum execution time of com.example.proftest.TestUnit.b_int_void [com.example.proftest.TestUnit.b_int_void.exectime.maximum] : 1
 ```
 
-Since our test program does not do anything concrete, method average
-execution times are (correctly) reported being zero or near zero.
+Without modifying or even restarting the target application in any way,
+with the tooling presented above we are able to provide lots of helpful
+metrics of the application behavior. (However, since our test program
+does not do anything concrete, method average execution times are
+(correctly) reported being zero or near zero.)
 
 With real applications different parts of monitoring can be enabled
 and disabled on-the-fly as needed by using the Byteman helper scripts
@@ -283,7 +285,7 @@ by loading and unloading rules. This allows, for example, first
 gathering overall understanding of application behavior and health and
 then investigating more relevant looking areas of the application in
 more detail. After uninstalling all the used rules, the application is
-then working as if no instrumentation would ever have been applied.
+again working as if no instrumentation would ever have been applied.
 
 ## Summary
 
