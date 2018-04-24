@@ -48,7 +48,7 @@ IF true
 DO incrementCountC();
 ENDRULE
 
-RULE JSON update frequency
+RULE Counter for JSON update frequency
 CLASS com.example.proftest.TestUnit
 METHOD <init>
 AT EXIT
