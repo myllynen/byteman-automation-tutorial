@@ -4,7 +4,7 @@
 
 ## Introduction
 
-This page introduces a [Byteman](http://byteman.jboss.org/) automation
+This page introduces a [Byteman](https://byteman.jboss.org/) automation
 tool that allows custom, on-the-fly instrumentation and monitoring of
 _unmodified_ Java applications, and exposing data to any external tool
 using the standard JMX technology.
@@ -30,7 +30,7 @@ Additional Byteman capabilities which could be utilized to customize and
 extend the tool include triggers for variable/object updates, running
 custom code at any point an of application code, evaluating conditions,
 and so forth. For more details, see
-[Byteman Programmer's Guide](http://downloads.jboss.org/byteman/latest/byteman-programmers-guide.html).
+[Byteman Programmer's Guide](https://downloads.jboss.org/byteman/latest/byteman-programmers-guide.html).
 
 ## Implementation Overview
 
@@ -39,7 +39,7 @@ methods where to install the instrumentation selected with command line
 options. It then creates a Byteman script to leverage Byteman's bytecode
 manipulation capabilities to transform starting or running Java
 applications. Byteman itself uses the
-[ASM framework](http://asm.ow2.org/) and is loaded as a Java agent using
+[ASM framework](https://asm.ow2.org/) and is loaded as a Java agent using
 the
 [Instrumentation API](https://docs.oracle.com/javase/10/docs/api/java/lang/instrument/package-summary.html)
 at application startup or at any point of application lifecycle with
@@ -96,7 +96,7 @@ below snippet into a terminal is enough):
 
 ```
 vers=4.0.2
-wget http://downloads.jboss.org/byteman/$vers/byteman-download-$vers-bin.zip
+wget https://downloads.jboss.org/byteman/$vers/byteman-download-$vers-bin.zip
 unzip byteman-download-$vers-bin.zip
 export BYTEMAN_HOME=$(pwd)/byteman-download-$vers
 export PATH=$BYTEMAN_HOME/bin:$PATH
@@ -182,7 +182,7 @@ _com.example.proftest.TestUnit_ class for this purpose.
 
 It is recommended to read more about used-defined rule helpers from the
 Byteman Programmer's Guide:
-http://downloads.jboss.org/byteman/latest/byteman-programmers-guide.html#user-defined-rule-helpers.
+https://downloads.jboss.org/byteman/latest/byteman-programmers-guide.html#user-defined-rule-helpers.
 
 (Note that depending on how Byteman was installed, its scripts may or
 may not have the _.sh_ suffix. NB. The test target is _proftest_, the
@@ -273,13 +273,14 @@ Average execution time of com.example.proftest.TestUnit.b_int_void [com.example.
 Maximum execution time of com.example.proftest.TestUnit.b_int_void [com.example.proftest.TestUnit.b_int_void.exectime.maximum] : 1
 ```
 
-Without modifying or even restarting the target application in any way,
-with the tooling presented above we are able to provide lots of helpful
-metrics of the application behavior. (However, since our test program
-does not do anything concrete, method average execution times are
-(correctly) reported being zero or near zero.)
+Without modifying the target application in any way or even restarting
+it, with only a few commands using the Byteman automation tooling
+presented above we were able to provide lots of useful metrics for an
+application. (However, since our test program does not do anything
+concrete, method average execution times are (correctly) reported being
+zero or near zero.)
 
-With real applications different parts of monitoring can be enabled
+With real applications different aspects of monitoring can be enabled
 and disabled on-the-fly as needed by using the Byteman helper scripts
 by loading and unloading rules. This allows, for example, first
 gathering overall understanding of application behavior and health and
@@ -307,9 +308,9 @@ applications under certain circumstances.
 
 ## Additional Resources
 
-* http://byteman.jboss.org/
+* https://byteman.jboss.org/
 * https://developer.jboss.org/wiki/ABytemanTutorial
-* http://downloads.jboss.org/byteman/latest/byteman-programmers-guide.html
+* https://downloads.jboss.org/byteman/latest/byteman-programmers-guide.html
 * https://prometheus.io/
 * http://pcp.io/
 

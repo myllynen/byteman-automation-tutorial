@@ -31,13 +31,13 @@ actual tool page: [byteman-automation-tool](byteman-automation-tool).
 
 ## Byteman
 
-From http://byteman.jboss.org/:
+From https://byteman.jboss.org/:
 
 > Byteman is a tool which makes it easy to trace, monitor and test the behaviour of Java application and JDK runtime code. It injects Java code into your application methods or into Java runtime methods without the need for you to recompile, repackage or even redeploy your application. Injection can be performed at JVM startup or after startup while the application is still running. Injected code can access any of your data and call any application methods, including where they are private.
 
 ## Overview
 
-The [Byteman Programmer's Guide](http://downloads.jboss.org/byteman/latest/byteman-programmers-guide.html)
+The [Byteman Programmer's Guide](https://downloads.jboss.org/byteman/latest/byteman-programmers-guide.html)
 lists four main areas where Byteman could be used:
 
 * tracing execution of specific code paths and displaying application or JVM state
@@ -110,7 +110,7 @@ below snippet into a terminal is enough):
 
 ```
 vers=4.0.2
-wget http://downloads.jboss.org/byteman/$vers/byteman-download-$vers-bin.zip
+wget https://downloads.jboss.org/byteman/$vers/byteman-download-$vers-bin.zip
 unzip byteman-download-$vers-bin.zip
 export BYTEMAN_HOME=$(pwd)/byteman-download-$vers
 export PATH=$BYTEMAN_HOME/bin:$PATH
@@ -141,7 +141,7 @@ Both the application and the Byteman script printing the same results
 allows us to verify that the statistics printed by the program and
 the example Byteman script are similar and correct.
 
-[Byteman Programmer's Guide](http://downloads.jboss.org/byteman/latest/byteman-programmers-guide.html)
+[Byteman Programmer's Guide](https://downloads.jboss.org/byteman/latest/byteman-programmers-guide.html)
 provides complete description of Byteman script syntax.
 
 From this initial script we see two downsides with this basic approach
@@ -189,7 +189,7 @@ runs may occur due to slight timing differences.)
 In case there were any issues with Byteman, consider the
 `org.jboss.byteman.debug` and/or `org.jboss.byteman.verbose` environment
 settings for more verbosity (see
-http://downloads.jboss.org/byteman/latest/byteman-programmers-guide.html#environment-settings
+https://downloads.jboss.org/byteman/latest/byteman-programmers-guide.html#environment-settings
 for all the supported settings).
 
 ## Byteman Rule Helpers
@@ -203,7 +203,7 @@ the built jar file for easier packaging.
 
 It is recommended to read more about used-defined rule helpers from the
 Byteman Programmer's Guide:
-http://downloads.jboss.org/byteman/latest/byteman-programmers-guide.html#user-defined-rule-helpers.
+https://downloads.jboss.org/byteman/latest/byteman-programmers-guide.html#user-defined-rule-helpers.
 
 Our example program is unchanged, but we add a custom helper code
 [JSONHelper.java](tutorial/3-byteman-json/src/main/java/com/example/proftest/JSONHelper.java)
