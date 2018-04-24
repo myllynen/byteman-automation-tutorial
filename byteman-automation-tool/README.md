@@ -308,6 +308,7 @@ applications under certain circumstances.
 
 ## Additional Resources
 
+* https://github.com/myllynen/byteman-automation-tutorial
 * https://byteman.jboss.org/
 * https://developer.jboss.org/wiki/ABytemanTutorial
 * https://downloads.jboss.org/byteman/latest/byteman-programmers-guide.html
