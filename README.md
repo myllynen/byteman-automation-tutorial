@@ -13,14 +13,14 @@ JMX technology.
 The tutorial starts with a simple Hello World like example and proceeds
 to eventually introduce a low overhead, easily customizable tool to
 provide statistics from Java applications supporting the following
-metrics over JMX (the actual tool supports additional metrics):
+metrics over JMX:
 
-* method average execution time
-* number of live instances of a class (for classes implementing
+* number of calls for any selected methods
+* min/avg/max execution time for any selected methods
+* number of exits via exceptions for any selected methods
+* number of live/total instances of a class (live only for classes implementing
   [Runnable](https://docs.oracle.com/javase/10/docs/api/java/lang/Runnable.html))
-* number of objects instantiated from a class
-* number of calls for any selected instance methods
-* instance average lifetime (for classes implementing
+* instance min/avg/max lifetime (for classes implementing
   [Runnable](https://docs.oracle.com/javase/10/docs/api/java/lang/Runnable.html))
 
 Basic Java, JMX, JVM, Linux, Maven, shell, and XML knowledge is
@@ -59,24 +59,24 @@ clear and to-the-point.
 
 ## Example Program
 
-The example program used throughout the rest of the tutorial is
+The example program used throughout the rest of this tutorial is
 available in the directory
 [tutorial/1-example-stdout](tutorial/1-example-stdout), more
 specially it consists of
 [ProfTest.java](tutorial/1-example-stdout/src/main/java/com/example/proftest/ProfTest.java).
 The program will create objects from the _TestUnit_ class indefinitely
-once per second. The objects will have a lifetime between 1 to 20
+once per second. The objects will have lifetime between 1 to 20
 seconds during which time they periodically call the class methods _a_,
 _b_, and _c_.
 
-The test program will print every 10 seconds statistics how many objects
-have been created, how many calls to different methods have been made,
-and the average lifetime of created objects.
+The program will print statistics every 10 seconds how many objects have
+been created, how many calls to different methods have been made, and
+the average lifetime of created objects.
 
 Note that these statistics are provided to allow verifying the later
 results when using Byteman, with real programs these kinds of counters
 and support routines are *not* needed in the application code when using
-the Byteman automation presented here.
+the Byteman automation introduced here.
 
 Below is a screenshot of compiling, running, and seeing the first update
 from the example program - note the _APP_ marker indicating the source
@@ -100,7 +100,8 @@ Average lifetime: 8
 
 Now that we have a test application with easy to understand behavior
 running, we can start learning and using Byteman for monitoring and
-gathering statistics from the application.
+gathering statistics from the test application in a way applicable to
+any other unmodified Java program as well.
 
 ## Byteman Installation
 
@@ -144,12 +145,6 @@ the example Byteman script are similar and correct.
 [Byteman Programmer's Guide](https://downloads.jboss.org/byteman/latest/byteman-programmers-guide.html)
 provides complete description of Byteman script syntax.
 
-From this initial script we see two downsides with this basic approach
-which will be addressed in the next sections: first, for lifetime we are
-relying on a method argument which in a real use case might not be
-present. Second, merely printing statistics on a terminal is not
-feasible approach with larger applications.
-
 Here we start the example program and Byteman with it at the same time
 as a Java agent:
 
@@ -186,6 +181,12 @@ from the example program (marker with _APP_). Both statistics are as
 expected and correct. (Minor variations in results over different test
 runs may occur due to slight timing differences.)
 
+From this initial script we see two downsides with this basic approach
+which will be addressed in the following sections: first, for lifetime
+we are relying on a method argument which in real use cases might not be
+present. Second, merely printing statistics on a terminal is not a
+feasible approach with larger applications.
+
 In case there were any issues with Byteman, consider the
 `org.jboss.byteman.debug` and/or `org.jboss.byteman.verbose` environment
 settings for more verbosity (see
@@ -195,11 +196,12 @@ for all the supported settings).
 ## Byteman Rule Helpers
 
 One thing that makes Byteman very powerful is that it supports
-user-defined rule helpers which allow running custom Java code at any
+_user-defined rule helpers_ which allow running custom Java code at any
 location of application code. Here we use this capability to allow us
-writing the results into a file using JSON notation. We also avoid
-relying on method arguments and move the Byteman script to be part of
-the built jar file for easier packaging.
+writing the results into a file using the JSON notation. In this
+improved version of the Byteman script we also avoid relying on method
+arguments. Finally, the Byteman script is moved to be part of the built
+jar file for easier packaging.
 
 It is recommended to read more about used-defined rule helpers from the
 Byteman Programmer's Guide:
@@ -254,17 +256,18 @@ $ cat data.json
 ```
 
 While the rules to call the helper as expected, writing a JSON file on
-application events could cause too much overhead and in general is not a
-standard way to provide metrics for Java applications. Here we used
-this approach merely to illustrate how custom code can be run with
-Byteman rule helpers, in the next section we address these issues and
-provide Byteman generated metrics properly over JMX.
+application events could cause too much overhead in some cases and in
+general it is not a standard way to provide metrics for Java
+applications. Here we used this approach merely to illustrate how custom
+code can be run with Byteman rule helpers, in the next section we
+address these issues and provide Byteman generated metrics properly over
+JMX.
 
 ## Byteman Data over JMX
 
-Now that we know how Byteman user-defined rule helpers work, it is easy
-to convert our above Byteman-to-JSON example as Byteman-to-JMX. This
-allows any tool (like
+Now that we know how Byteman user-defined rule helpers work, we can
+convert our above Byteman-to-JSON helper as somewhat more sophisticated
+Byteman-to-JMX helper. This allows any tool (like
 [JConsole](https://docs.oracle.com/javase/10/management/using-jconsole.htm),
 [Prometheus](https://prometheus.io/) or
 [Performance Co-Pilot](http://pcp.io/), PCP) consuming metrics over the
@@ -272,16 +275,18 @@ standard JMX interface to retrieve data provided by the Byteman helper.
 
 The example program still unchanged, our new custom helper code is
 [JMXHelper.java](tutorial/4-byteman-jmx/src/main/java/com/example/proftest/JMXHelper.java).
-It is similar than the previous example but instead of writing a JSON
-file it defines a dynamic MBean providing the previous statistics as
-MBean attributes.
+It is similar to the previous example but instead of writing a JSON file
+it defines a dynamic MBean providing the previous statistics as MBean
+attributes.
 [rules.btm](tutorial/4-byteman-jmx/src/main/resources/rules.btm) script
-connects the events in the application execution flow to our JMX helper.
+again connects the events in the application execution flow to our JMX
+helper.
 
 For easy testing, a simple standalone
-[MBean2TXT](tutorial/4-byteman-jmx/MBean2TXT.java) utility (unrelated to
-the actual Byteman example code) is used in the below example. For this,
-we need to start the JVM with JMX enabled:
+[MBean2TXT](tutorial/4-byteman-jmx/MBean2TXT.java) utility (completely
+unrelated to the actual Byteman example code) is used in the below
+example. To allow the MBean2TXT utility to read these metrics, we need
+to start the JVM with JMX access enabled:
 
 ```
 $ cd tutorial/4-byteman-jmx
@@ -298,9 +303,8 @@ $ java \
 ```
 
 The example program will still print out statistics as before but now we
-can access those statistics also with the standalone utility (or, as said,
-any other JMX consuming tool, like [Prometheus](https://prometheus.io/)
-or [Performance Co-Pilot](http://pcp.io/), PCP):
+access and print those statistics also with the separate MBean2TXT
+utility using the standard JMX interface:
 
 ```
 $ javac MBean2TXT.java
@@ -319,8 +323,10 @@ Average lifetime: 8
 ### Byteman and PCP Example (optional)
 
 For the sake of a more complete (command line) example, here is a
-screenshot from a patched Fedora 28 VM where [PCP](http://pcp.io/) is
-enabled and its plugin for JMX metrics,
+screenshot from a
+[patched](https://github.com/performancecopilot/parfait/pull/56/files)
+Fedora 28 VM where [PCP](http://pcp.io/) is enabled and its plugin for
+JMX metrics,
 [Parfait](https://github.com/performancecopilot/parfait), is configured:
 
 ```
@@ -347,8 +353,8 @@ $ pmrep --interval 10 --samples 2 --separate-header --width 5 mmv.byteman
 From here, we could use PCP to write the available metrics to an archive
 log, use [pmrep(1)](http://man7.org/linux/man-pages/man1/pmrep.1.html)
 for more elaborate reporting (possibly by combining these application
-metrics with JVM, DB, OS, and other PCP provided metrics), or perhaps
-use PCP tools like
+metrics with standard JVM statistics, database, operating system, and
+other PCP provided metrics), or perhaps use PCP tools like
 [pcp2elasticsearch(1)](http://man7.org/linux/man-pages/man1/pcp2elasticsearch.1.html),
 [pcp2graphite(1)](http://man7.org/linux/man-pages/man1/pcp2graphite.1.html),
 or [pcp2zabbix(1)](http://man7.org/linux/man-pages/man1/pcp2zabbix.1.html)
@@ -358,9 +364,9 @@ and further analysis.
 ## Byteman Generic JMX Helper
 
 The earlier example already makes it possible to provide helpful metrics
-from unmodified Java applications over JMX. However, the approach so far
-is not scalable as application implementation details are coded in the
-Byteman script and the JMXHelper.
+from the example test application over JMX. However, the approach so far
+is not scalable as application implementation details are hard coded in
+the Byteman script and the JMXHelper.
 
 To address these issues,
 [JMXHelper.java](tutorial/5-byteman-generic/src/main/java/com/example/proftest/JMXHelper.java)
@@ -368,10 +374,10 @@ is made generic so that it can be used with any application, the metrics
 (MBean attributes) published over JMX are now dynamic. Also the Byteman
 script [rules.btm](tutorial/5-byteman-generic/src/main/resources/rules.btm)
 is adjusted to call these generic methods of the helper, no application
-related details are included in the script anymore either.
+specific details are included in the script anymore either.
 
-To guarantee reliability of this approach, we enable automatic Byteman
-script correctness checking as part of Maven packaging phase in
+To guarantee the reliability of this approach, we enable Byteman script
+correctness checking as part of Maven packaging phase in the
 [pom.xml](tutorial/5-byteman-generic/pom.xml). Also the simple
 [MBean2TXT](tutorial/5-byteman-generic/MBean2TXT.java) utility is made
 slightly more generic by adjusting its output format.
@@ -411,8 +417,9 @@ Average execution time of com.example.proftest.TestUnit.a_int_long_void [com.exa
 ```
 
 Since our simple test program does not do anything useful, method
-average execution time is (correctly) reported being zero. The actual
-tool supports also reporting minimum and maximum method execution times.
+average execution time is (correctly) reported being zero. The
+[actual tool](https://github.com/myllynen/byteman-automation-tutorial/tree/master/byteman-automation-tool)
+supports also reporting minimum and maximum method execution times.
 
 We now have a generic tool to publish any statistics we choose from
 unmodified Java applications over JMX! To push things even further, in
@@ -430,18 +437,19 @@ rather familiar with Byteman, ideally only overall knowledge of the
 application under investigation would be needed.
 
 The Byteman JMX helper from the previous example is unchanged but a new
-standalone helper tool to automatically create Byteman scripts is added.
-This [RuleCreator](tutorial/6-byteman-automate/RuleCreator.java) reads
-in a text file listing target classes and methods and based on given
-parameters writes out a new Byteman script.
+standalone helper tool to automatically create Byteman scripts is
+introduced. This
+[RuleCreator](tutorial/6-byteman-automate/RuleCreator.java) reads in a
+text file listing target classes and methods and based on given
+command line options writes out a new Byteman script.
 
 While there are several ways to determine the most relevant target
 classes and methods (the tool page discusses this in more detail), here
 we use a quick and simple
 [jarp.sh](tutorial/6-byteman-automate/jarp.sh)
 shell script to generate a list of all methods found in a given jar
-file. This list can then easily be adjusted as needed. In this example,
-we include the earlier monitored classes and methods.
+file. This list can then be adjusted as needed. In this example, we
+include the earlier monitored classes and methods.
 
 Since the example program is unchanged we can use the earlier compiled
 jar from the first example to create the initial list of target classes
@@ -495,8 +503,8 @@ $ java \
   -jar ./target/proftest-06-byteman-automate-1.0.jar
 ```
 
-And then availability of the metrics based on the automatically created
-Byteman script is verified:
+And then the availability of the metrics based on the automatically
+created Byteman script is verified:
 
 ```
 $ javac MBean2TXT.java
@@ -515,11 +523,12 @@ Average execution time of com.example.proftest.TestUnit.b_int_void [com.example.
 ```
 
 In addition being able to publish any statistics we choose from
-unmodified Java applications over JMX, we now can also create the needed
-Byteman scripts for any selected target methods with the utility!
+unmodified Java applications over JMX, we can now also automatically
+create the needed Byteman scripts for any selected target methods with
+the utility!
 
 This concludes the tutorial, the actual Byteman Automation Tool (which
-has more features and proper packaging) will be presented in its own
+has more features and proper packaging) will be introduced in its own
 page, see the link below.
 
 ## Byteman Automation Tool

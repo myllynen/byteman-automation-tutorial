@@ -6,8 +6,8 @@
 
 This page introduces a [Byteman](https://byteman.jboss.org/) automation
 tool that allows custom, on-the-fly instrumentation and monitoring of
-_unmodified_ Java applications, and exposing data to any external tool
-using the standard JMX technology.
+_unmodified_ Java applications, and exposing the captured data to any
+external tool using the standard JMX technology.
 
 Although using _the tool does not necessarily require Byteman
 knowledge_, it is still recommended to check the
@@ -28,8 +28,8 @@ provides statistics from Java applications for the following metrics:
 
 Additional Byteman capabilities which could be utilized to customize and
 extend the tool include triggers for variable/object updates, running
-custom code at any point an of application code, evaluating conditions,
-and so forth. For more details, see
+custom code at any point of application code, evaluating conditions, and
+so forth. For more details, see
 [Byteman Programmer's Guide](https://downloads.jboss.org/byteman/latest/byteman-programmers-guide.html).
 
 ## Implementation Overview
@@ -37,20 +37,20 @@ and so forth. For more details, see
 The tool reads a plain text configuration file listing classes and
 methods where to install the instrumentation selected with command line
 options. It then creates a Byteman script to leverage Byteman's bytecode
-manipulation capabilities to transform starting or running Java
-applications. Byteman itself uses the
-[ASM framework](https://asm.ow2.org/) and is loaded as a Java agent using
-the
+manipulation capabilities to transform Java applications. Byteman itself
+uses the [ASM framework](https://projects.ow2.org/view/asm/) and is
+loaded as a Java agent using the
 [Instrumentation API](https://docs.oracle.com/javase/10/docs/api/java/lang/instrument/package-summary.html)
 at application startup or at any point of application lifecycle with
 Byteman convenience scripts leveraging the
 [Attach API](https://docs.oracle.com/javase/10/docs/api/com/sun/tools/attach/package-summary.html)
 (which since Java 9 does not require the separate _tools.jar_ anymore).
 
-Once running, the application has been transformed to use methods of a
-helper class part of the tool converting application events into
-statistics available over JMX. Unlike with, for example,
-[Proxy](https://docs.oracle.com/javase/10/docs/api/java/lang/reflect/Proxy.html)
+Once the created Byteman script has been loaded, the application has
+been transformed to use methods of a helper class part of the tool
+converting application events into statistics available over JMX. Unlike
+with, for example,
+[Proxy class](https://docs.oracle.com/javase/10/docs/api/java/lang/reflect/Proxy.html)
 or
 [Prometheus instrumentation](https://prometheus.io/docs/practices/instrumentation/),
 tracing can be extended to new areas of an application or libraries
@@ -66,7 +66,7 @@ The above approach provides the following benefits and options:
 
 * no application code changes needed to monitor application internals
 * can be applied to components for which source is not available
-* can be enabled on class/method level, no one giant switch
+* can be enabled on class/method level, no one global switch
 * can be enabled and disabled on-the-fly as needed
 * allows for customization and extensibility
 * results available over standard JMX
@@ -77,16 +77,16 @@ For example, the following aspects might need to be considered:
 
 * using containers or not
 * test or production environment
-* easily reproducible or "once-a-month" issue
+* easily reproducible or a "once-a-month" issue
 * possible to use other troubleshooting tools or not
 * are application/component developers reachable or not
-* previously added instrumentation present in application code or not
+* built-in instrumentation in application available or not
 
 In-depth considerations of these aspects are out of scope for this
-document and are merely mentioned as a base for discussions which of the
-many available methodologies and tools to use in any particular
-situation; this tool is often not the best choice but may be very
-helpful under certain circumstances.
+document and they are merely mentioned as a base for further discussions
+which of the many available methodologies and tools to use in any
+particular situation; this tool is not always the best choice but may be
+very helpful under certain circumstances.
 
 ## Byteman Installation
 
@@ -119,6 +119,7 @@ to be used as a guinea pig in the later example:
 ```
 $ cd tutorial/1-example-stdout
 $ mvn package
+(output omitted)
 $ java \
     -Dcom.sun.management.jmxremote=true \
     -Dcom.sun.management.jmxremote.authenticate=false \
@@ -128,17 +129,18 @@ $ java \
     -jar ./target/proftest-01-example-stdout-1.0.jar
 ```
 
-The program does nothing else than print some statistics periodically.
+The program does nothing else except print some statistics of its
+internals periodically.
 
-Next we use [a trivial shell script](jarp.sh) to list all methods from
-the jar to create the initial configuration file containing
+Next we use [a trivial shell script](jarp.sh) to list all the methods
+from the jar file to create the initial configuration file containing
 instrumentation points for the test application, customize these targets
 (for real applications these configurations could be predefined, have
 different target sets for different scenarios, be integrated with higher
 level tools, and so forth), then use the
 [tool](src/main/java/org/jboss/byteman/automate/proftool)
-to generate the corresponding Byteman script, and finally check the
-generated script:
+to create the Byteman script to instrument the application, and finally
+check the generated script for correctness:
 
 ```
 $ cd byteman-automation-tool
@@ -149,6 +151,7 @@ com.example.proftest.TestUnit#a
 com.example.proftest.TestUnit#b
 com.example.proftest.TestUnit#c
 $ mvn package
+(output omitted)
 $ java \
     -jar ./target/proftool-1.0.jar \
       --input-file targets.txt \
@@ -168,19 +171,21 @@ $ tooljar=./target/proftool-1.0.jar
 $ bmcheck -cp $appjar:$tooljar -v rules.btm
 ```
 
-It is worth explaining the _-register-class_ and _-register-method_
-parameters here: they define the class and the method of which
-invocation causes
+While the other command lines options are pretty obvious in what they do
+(and described briefly below), it is worth explaining the
+_-register-class_ and _-register-method_ options in detail here: they
+define the class and the method of which invocation causes
 [the Byteman helper class](src/main/java/org/jboss/byteman/automate/proftool/JMXHelper.java)
 of the tool responsible for transforming application events into metrics
 available over JMX getting registered. In case the Byteman agent is
 installed during application startup, the method could be _main_. Here,
-where we will install the agent and the script while the application is
-already running, we need to know any one method that gets invoked to
-have the helper registered. We use the constructor of the test program's
+where we will install the agent and the script when the application is
+already running, we need to know any one method that is called to have
+the helper registered. We use the constructor of the test program's
 _com.example.proftest.TestUnit_ class for this purpose.
 
 It is recommended to read more about used-defined rule helpers from the
+[tutorial](https://github.com/myllynen/byteman-automation-tutorial) and
 Byteman Programmer's Guide:
 https://downloads.jboss.org/byteman/latest/byteman-programmers-guide.html#user-defined-rule-helpers.
 
@@ -241,13 +246,13 @@ Here we use the Byteman convenience scripts to install the Byteman agent
 into the target JVM, load the helper tool, and submit the previously
 generated Byteman script. After that we pause for a moment to make sure
 the helper has been registered and then we uninstall the rule that was
-only used for registering the helper, the actual instrumentation is left
-active. The above commands are also available as script
+only used for registering the helper, the actual instrumentation is
+otherwise left active. The above commands are also available as script
 [submit.sh](submit.sh).
 
 To verify all the previous steps, we use a simple
-[MBean2TXT](MBean2TXT.java) helper utility to retrieve all the available
-metrics over JMX:
+[MBean2TXT](MBean2TXT.java) utility (completely unrelated to the actual
+automation tool) to retrieve all the available metrics over JMX:
 
 ```
 $ javac MBean2TXT.java
@@ -273,36 +278,38 @@ Average execution time of com.example.proftest.TestUnit.b_int_void [com.example.
 Maximum execution time of com.example.proftest.TestUnit.b_int_void [com.example.proftest.TestUnit.b_int_void.exectime.maximum] : 1
 ```
 
-Without modifying the target application in any way or even restarting
-it, with only a few commands using the Byteman automation tooling
-presented above we were able to provide lots of useful metrics for an
-application. (However, since our test program does not do anything
-concrete, method average execution times are (correctly) reported being
-zero or near zero.)
+(Note that since our test program does not do anything meaningful,
+method average execution times are (correctly) reported being zero or
+near zero.)
 
-With real applications different aspects of monitoring can be enabled
-and disabled on-the-fly as needed by using the Byteman helper scripts
-by loading and unloading rules. This allows, for example, first
-gathering overall understanding of application behavior and health and
-then investigating more relevant looking areas of the application in
-more detail. After uninstalling all the used rules, the application is
-again working as if no instrumentation would ever have been applied.
+Without modifying a target Java application in any way or even
+restarting it, with only a few commands using the Byteman Automation
+Tool introduced above we are now able to provide application internal
+statistics over JMX!
+
+With real applications monitoring different aspects could be enabled and
+disabled on-the-fly by loading and unloading different Byteman helper
+scripts. This allows, for example, first gathering overall understanding
+of application behavior and health and then investigating more relevant
+looking areas of the application in more detail. After uninstalling all
+the loaded rules, the application is again working as if no
+instrumentation ever would have been applied.
 
 ## Summary
 
-This page introduced an automated toolset for instrumenting and
-monitoring _unmodified_ Java applications on-the-fly. The tool can be
-customized and extended and can be considered as complementary to other
-available alternatives and may greatly increase observability of
-applications under certain circumstances.
+This page introduced Byteman Automation Tool for instrumenting and
+monitoring _unmodified_ Java applications on-the-fly over JMX. The tool
+can be customized and extended as needed. It can be considered as a
+complementary option to other available alternatives and may greatly
+increase observability of applications under certain circumstances.
 
 ## Limitations
 
-* Some statistics supported by tools accessing JVM internal using the
+* Some statistics supported by tools accessing JVM internals using the
   native JNI / JVM TI interfaces are not available when using bytecode
-  instrumentation
-* Creating dynamic MBean based metrics on the fly may prevent some JMX
-  metrics collectors started as javaagent to detect and retrieve them
+  transformation based instrumentation
+* Creating dynamic MBean based metrics on-the-fly may prevent some JMX
+  metric collectors started as javaagent to detect and retrieve them
   * At least PCP/Parfait fails in this regard, see
     https://github.com/performancecopilot/parfait/issues/32
 
