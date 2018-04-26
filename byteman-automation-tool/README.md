@@ -16,7 +16,8 @@ for basic Byteman introduction and to understand the basic operation of
 this tool.
 
 The tool can be customized and extended as needed, this initial version
-provides statistics from Java applications for the following metrics:
+provides statistics from unmodified Java applications for the following
+metrics:
 
 * number of calls for any selected methods
 * min/avg/max execution time for any selected methods
@@ -80,7 +81,7 @@ For example, the following aspects might need to be considered:
 * easily reproducible or a "once-a-month" issue
 * possible to use other troubleshooting tools or not
 * are application/component developers reachable or not
-* built-in instrumentation in application available or not
+* built-in instrumentation support in application available or not
 
 In-depth considerations of these aspects are out of scope for this
 document and they are merely mentioned as a base for further discussions
@@ -292,7 +293,7 @@ disabled on-the-fly by loading and unloading different Byteman helper
 scripts. This allows, for example, first gathering overall understanding
 of application behavior and health and then investigating more relevant
 looking areas of the application in more detail. After uninstalling all
-the loaded rules, the application is again working as if no
+the loaded rules, the application is again working as if no Byteman
 instrumentation ever would have been applied.
 
 ## Summary

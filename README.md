@@ -12,8 +12,8 @@ JMX technology.
 
 The tutorial starts with a simple Hello World like example and proceeds
 to eventually introduce a low overhead, easily customizable tool to
-provide statistics from Java applications supporting the following
-metrics over JMX:
+provide statistics from unmodified Java applications supporting the
+following metrics over JMX:
 
 * number of calls for any selected methods
 * min/avg/max execution time for any selected methods
