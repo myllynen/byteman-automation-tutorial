@@ -61,7 +61,7 @@ public class JMXHelper extends Helper implements DynamicMBean {
         synchronized (mbs) {
             try {
                 ObjectName oname = new ObjectName(name);
-                if (mbs.isRegistered(oname) == false) {
+                if (!mbs.isRegistered(oname)) {
                     mbs.registerMBean(this, oname);
                 }
             } catch (Exception ex) { ex.printStackTrace(); }
