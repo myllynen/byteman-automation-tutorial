@@ -270,7 +270,7 @@ convert our above Byteman-to-JSON helper as somewhat more sophisticated
 Byteman-to-JMX helper. This allows any tool (like
 [JConsole](https://docs.oracle.com/javase/10/management/using-jconsole.htm),
 [Prometheus](https://prometheus.io/) or
-[Performance Co-Pilot](http://pcp.io/), PCP) consuming metrics over the
+[Performance Co-Pilot](https://pcp.io/), PCP) consuming metrics over the
 standard JMX interface to retrieve data provided by the Byteman helper.
 
 The example program still unchanged, our new custom helper code is
@@ -325,7 +325,7 @@ Average lifetime: 8
 For the sake of a more complete (command line) example, here is a
 screenshot from a
 [patched](https://github.com/performancecopilot/parfait/pull/56/files)
-Fedora 28 VM where [PCP](http://pcp.io/) is enabled and its plugin for
+Fedora 28 VM where [PCP](https://pcp.io/) is enabled and its plugin for
 JMX metrics,
 [Parfait](https://github.com/performancecopilot/parfait), is configured:
 
