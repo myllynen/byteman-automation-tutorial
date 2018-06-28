@@ -131,7 +131,9 @@ $ java \
 ```
 
 The program does nothing else except print some statistics of its
-internals periodically.
+internals periodically. This repo also contains a little helper
+utility [JMXEnabler](JMXEnabler.java) which can be used to enable
+JMX on the target JVM if it was started without JMX being enabled.
 
 Next we use [a trivial shell script](jarp.sh) to list all the methods
 from the jar file to create the initial configuration file containing
