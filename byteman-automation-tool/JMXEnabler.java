@@ -24,8 +24,8 @@ import com.sun.tools.attach.VirtualMachine;
 
 public class JMXEnabler {
     private static void usage(String[] params) {
-        System.err.println("Usage: JMXEnabler <pid>");
-        System.err.println("Supported properties:");
+        System.err.println("Usage: JMXEnabler <options> <pid>");
+        System.err.println("Supported options:");
         for (String param: params) {
             System.err.println("  -D" + param);
         }
