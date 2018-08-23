@@ -23,8 +23,28 @@ import java.util.Properties;
 import com.sun.tools.attach.VirtualMachine;
 
 public class JMXEnabler {
-    private static void usage(String[] params) {
-        System.err.println("Usage: JMXEnabler <options> <pid>");
+    private static String[] params = {
+        //"com.sun.management.jmxremote",
+        "com.sun.management.jmxremote.access.file",
+        "com.sun.management.jmxremote.authenticate",
+        //"com.sun.management.jmxremote.config.file",
+        "com.sun.management.jmxremote.host",
+        //"com.sun.management.jmxremote.local.only",
+        "com.sun.management.jmxremote.login.config",
+        "com.sun.management.jmxremote.password.file",
+        //"com.sun.management.jmxremote.password.toHashes",
+        "com.sun.management.jmxremote.port",
+        "com.sun.management.jmxremote.registry.ssl",
+        //"com.sun.management.jmxremote.serial.filter.pattern",
+        "com.sun.management.jmxremote.ssl",
+        "com.sun.management.jmxremote.ssl.config.file",
+        "com.sun.management.jmxremote.ssl.enabled.cipher.suites",
+        "com.sun.management.jmxremote.ssl.enabled.protocols",
+        "com.sun.management.jmxremote.ssl.need.client.auth",
+    };
+
+    private static void usage() {
+        System.err.println("Usage: java <options> JMXEnabler <pid>");
         System.err.println("Supported options:");
         for (String param: params) {
             System.err.println("  -D" + param);
@@ -34,28 +54,8 @@ public class JMXEnabler {
     }
 
     public static void main(String[] args) throws Exception {
-        String[] params = {
-                            //"com.sun.management.jmxremote",
-                            "com.sun.management.jmxremote.access.file",
-                            "com.sun.management.jmxremote.authenticate",
-                            //"com.sun.management.jmxremote.config.file",
-                            "com.sun.management.jmxremote.host",
-                            //"com.sun.management.jmxremote.local.only",
-                            "com.sun.management.jmxremote.login.config",
-                            "com.sun.management.jmxremote.password.file",
-                            //"com.sun.management.jmxremote.password.toHashes",
-                            "com.sun.management.jmxremote.port",
-                            "com.sun.management.jmxremote.registry.ssl",
-                            //"com.sun.management.jmxremote.serial.filter.pattern",
-                            "com.sun.management.jmxremote.ssl",
-                            "com.sun.management.jmxremote.ssl.config.file",
-                            "com.sun.management.jmxremote.ssl.enabled.cipher.suites",
-                            "com.sun.management.jmxremote.ssl.enabled.protocols",
-                            "com.sun.management.jmxremote.ssl.need.client.auth",
-                          };
-
         if (args.length < 1 || args.length > 1 || args[0].substring(0, 1).equals("-")) {
-            usage(params);
+            usage();
         }
 
         VirtualMachine vm = VirtualMachine.attach(args[0]);
@@ -71,6 +71,10 @@ public class JMXEnabler {
                 }
                 props.put(param, System.getProperty(param));
             }
+        }
+
+        if (props.isEmpty()) {
+            usage();
         }
 
         System.out.println(props);
