@@ -201,13 +201,13 @@ public class RuleCreator {
     public StringBuilder createRules() throws FileNotFoundException, IOException {
         StringBuilder ruleScriptBuilder = new StringBuilder();
         try (BufferedReader br = new BufferedReader(new FileReader(inputFile))) {
-
             ruleScriptBuilder.append(createRegisterMBeanRule(registerClass, registerMethod, registerAction, registerObject).build());
 
             String prevClazz = null;
             HashSet<String> lines = new HashSet<>();
             for (String line; (line = br.readLine()) != null; ) {
-                if (!lines.add(line)) {
+                line = line.trim();
+                if (line.isEmpty() || !lines.add(line)) {
                     continue;
                 }
                 String clazz = line.substring(0, line.indexOf("#"));
