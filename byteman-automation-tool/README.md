@@ -96,7 +96,7 @@ version locally without additional privileges is easy (copypasting the
 below snippet into a terminal is enough):
 
 ```
-vers=4.0.2
+vers=4.0.4
 wget https://downloads.jboss.org/byteman/$vers/byteman-download-$vers-bin.zip
 unzip byteman-download-$vers-bin.zip
 export BYTEMAN_HOME=$(pwd)/byteman-download-$vers

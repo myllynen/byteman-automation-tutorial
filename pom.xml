@@ -13,7 +13,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <byteman.version>4.0.2</byteman.version>
+        <byteman.version>4.0.4</byteman.version>
     </properties>
 
     <modules>

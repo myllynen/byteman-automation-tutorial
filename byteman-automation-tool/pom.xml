@@ -12,7 +12,7 @@
     <url>https://github.com/myllynen/byteman-automation-tutorial/tree/master/byteman-automation-tool</url>
 
     <properties>
-        <byteman.version>4.0.2</byteman.version>
+        <byteman.version>4.0.4</byteman.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -42,7 +42,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
